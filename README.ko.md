@@ -36,7 +36,7 @@ curl -fsSL https://kyeot.app/install | sh
 |---|---|
 | 로그인할 때 저절로 켜기 | `kyeot service install` |
 | QR 다시 보기 | `kyeot pair` |
-| 업데이트 | `kyeot update`(또는 설치 명령을 다시 실행). 데이터와 서비스 설정은 그대로 남아요 |
+| 업데이트 | 0.1.6 부터는 `kyeot update`, 0.1.5 이하는 설치 명령을 다시 실행해요. 데이터와 서비스 설정은 그대로 남아요 |
 | 잘 깔렸는지 보기 | `kyeot version` |
 
 설치 안내와 `kyeot` 명령은 터미널 언어를 따라가요. 한국어가 아니게 나오면 `curl -fsSL https://kyeot.app/install | KYEOT_LANG=ko sh` 로 실행하세요.

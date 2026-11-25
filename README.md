@@ -36,7 +36,7 @@ The command prints a QR code. Scan it with the Kyeot app to pair your phone with
 |---|---|
 | Start at login | `kyeot service install` |
 | Show the QR again | `kyeot pair` |
-| Update | `kyeot update` (or run the install command again). Your data and service settings stay |
+| Update | `kyeot update` on 0.1.6 or later. On 0.1.5 or earlier, run the install command again. Your data and service settings stay |
 | Check the install | `kyeot version` |
 
 The installer and the `kyeot` commands follow your terminal language. For Korean, run `curl -fsSL https://kyeot.app/install | KYEOT_LANG=ko sh`.
