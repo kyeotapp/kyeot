@@ -1,0 +1,77 @@
+name: Bug report
+description: Something in the kyeot server or bridge does not work as expected
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please search existing issues first.
+        **Security problems do not belong here** — report them privately as described in [SECURITY.md](https://github.com/kyeotapp/kyeot/blob/main/SECURITY.md).
+        한국어로 적어도 됩니다.
+  - type: input
+    id: server-version
+    attributes:
+      label: Server version
+      description: Output of `kyeot version`. A source build prints `dev`; then add the commit (`git rev-parse --short HEAD`)
+      placeholder: 0.1.5
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: Shown in the app under Settings, next to About (정보). Write "web" or "not involved" if that fits better
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: OS of the server machine
+      placeholder: macOS 26.1 (Apple silicon) / Ubuntu 24.04 (x86_64)
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      description: Which agent was connected when it happened?
+      options:
+        - Hermes (built-in bridge)
+        - Hermes via `kyeot connect` on another machine
+        - My own agent over WebSocket
+        - No agent involved
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start the server with ...
+        2. In the app, ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Server log lines around the problem.
+        **Remove tokens, pairing codes, server addresses, and personal data before pasting.** Issues are public.
+      render: text
+    validations:
+      required: false

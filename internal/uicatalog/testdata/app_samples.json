@@ -1,0 +1,2366 @@
+{
+ "screens": [
+  {
+   "version": 1,
+   "id": "rooms",
+   "title": "방",
+   "icon": "number",
+   "blocks": [
+    {
+     "type": "rooms"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "routines",
+   "title": "루틴",
+   "icon": "repeat",
+   "blocks": [
+    {
+     "type": "routines"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "costs",
+   "title": "비용",
+   "icon": "chart.bar",
+   "blocks": [
+    {
+     "type": "costs"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "today",
+   "title": "오늘 한눈에",
+   "icon": "sun.max",
+   "blocks": [
+    {
+     "type": "stats",
+     "items": [
+      {
+       "label": "오늘 쓴 비용",
+       "value": {
+        "$data": "deck.costs.today"
+       },
+       "unit": "USD",
+       "link": {
+        "to": "costs",
+        "period": "day"
+       }
+      },
+      {
+       "label": "최근 7일",
+       "value": {
+        "$data": "deck.costs.week"
+       },
+       "unit": "USD",
+       "link": {
+        "to": "costs",
+        "period": "week"
+       }
+      }
+     ]
+    },
+    {
+     "type": "stats",
+     "items": [
+      {
+       "label": "확인 요청",
+       "value": {
+        "$data": "deck.approvals.count"
+       },
+       "link": {
+        "to": "approvals"
+       }
+      },
+      {
+       "label": "오늘 대화",
+       "value": {
+        "$data": "deck.tasks.today"
+       }
+      }
+     ]
+    },
+    {
+     "type": "bars",
+     "title": "최근 7일 비용",
+     "unit": "USD",
+     "items": {
+      "$data": "deck.costs.daily"
+     },
+     "link": {
+      "to": "costs",
+      "period": "week"
+     }
+    },
+    {
+     "type": "list",
+     "title": "다음 루틴",
+     "items": {
+      "$data": "deck.routines.upcoming"
+     },
+     "link": {
+      "to": "routines"
+     }
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "revenue",
+   "title": "수익",
+   "icon": "chart.line.uptrend.xyaxis",
+   "blocks": [
+    {
+     "type": "stat",
+     "label": "이번 달",
+     "value": {
+      "$data": "revenue.month.total"
+     },
+     "unit": "KRW",
+     "compare": {
+      "$data": "revenue.month.prev"
+     },
+     "compareLabel": "지난달",
+     "better": "up"
+    },
+    {
+     "type": "bars",
+     "title": "하루씩",
+     "unit": "KRW",
+     "items": {
+      "$data": "revenue.daily"
+     }
+    },
+    {
+     "type": "hbars",
+     "title": "어디서 벌었나",
+     "unit": "KRW",
+     "items": {
+      "$data": "revenue.bySource"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "수익 탭에 내 수익 데이터를 채워 줘. 어디서 가져올지 먼저 물어봐 줘"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "habits",
+   "title": "습관",
+   "icon": "checkmark.seal",
+   "blocks": [
+    {
+     "type": "stat",
+     "label": "연속 일수",
+     "value": {
+      "$data": "habits.streak"
+     },
+     "unit": "일째",
+     "better": "up"
+    },
+    {
+     "type": "progress",
+     "label": "목표 1",
+     "value": {
+      "$data": "habits.goals.0.value"
+     },
+     "goal": {
+      "$data": "habits.goals.0.goal"
+     }
+    },
+    {
+     "type": "progress",
+     "label": "목표 2",
+     "value": {
+      "$data": "habits.goals.1.value"
+     },
+     "goal": {
+      "$data": "habits.goals.1.goal"
+     }
+    },
+    {
+     "type": "progress",
+     "label": "목표 3",
+     "value": {
+      "$data": "habits.goals.2.value"
+     },
+     "goal": {
+      "$data": "habits.goals.2.goal"
+     }
+    },
+    {
+     "type": "list",
+     "title": "오늘 체크",
+     "items": {
+      "$data": "habits.today"
+     }
+    },
+    {
+     "type": "calendar",
+     "title": "최근 14일",
+     "days": 14,
+     "unit": "개",
+     "items": {
+      "$data": "habits.days"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "내 습관 목록과 이번 주 기록을 먼저 물어보고 습관 탭을 채워 줘"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "todos",
+   "title": "할 일",
+   "icon": "checklist",
+   "blocks": [
+    {
+     "type": "stats",
+     "items": [
+      {
+       "label": "남은 할 일",
+       "value": {
+        "$data": "todos.open"
+       }
+      },
+      {
+       "label": "오늘 마감",
+       "value": {
+        "$data": "todos.dueToday"
+       }
+      }
+     ]
+    },
+    {
+     "type": "list",
+     "title": "할 일",
+     "items": {
+      "$data": "todos.items"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "할 일을 어디서 가져올지 먼저 물어보고 할 일 탭을 채워 줘"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "workout",
+   "title": "운동",
+   "icon": "figure.run",
+   "blocks": [
+    {
+     "type": "stats",
+     "items": [
+      {
+       "label": "이번 주 횟수",
+       "value": {
+        "$data": "workout.week.count"
+       },
+       "unit": "회"
+      },
+      {
+       "label": "이번 주 시간",
+       "value": {
+        "$data": "workout.week.minutes"
+       },
+       "unit": "분"
+      }
+     ]
+    },
+    {
+     "type": "bars",
+     "title": "하루씩",
+     "unit": "분",
+     "items": {
+      "$data": "workout.daily"
+     }
+    },
+    {
+     "type": "list",
+     "title": "최근 기록",
+     "items": {
+      "$data": "workout.recent"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "운동 기록을 어디서 가져올지 물어보고 운동 탭을 채워 줘"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "assets",
+   "title": "자산",
+   "icon": "banknote",
+   "blocks": [
+    {
+     "type": "stat",
+     "label": "총자산",
+     "value": {
+      "$data": "assets.total"
+     },
+     "unit": "KRW",
+     "compare": {
+      "$data": "assets.prev"
+     },
+     "compareLabel": "지난달",
+     "better": "up"
+    },
+    {
+     "type": "hbars",
+     "title": "자산별",
+     "unit": "KRW",
+     "items": {
+      "$data": "assets.byKind"
+     }
+    },
+    {
+     "type": "line",
+     "title": "월별",
+     "labels": {
+      "$data": "assets.months"
+     },
+     "series": {
+      "$data": "assets.series"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "자산 항목을 물어보고 자산 탭을 채워 줘. 계좌 비밀번호나 인증 정보는 받지 말고 숫자만 받아"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "reading",
+   "title": "읽을거리",
+   "icon": "newspaper",
+   "blocks": [
+    {
+     "type": "text",
+     "text": "아직 오늘 요약이 없어요. 아래 버튼으로 에이전트에게 부탁해 보세요."
+    },
+    {
+     "type": "list",
+     "title": "링크",
+     "items": {
+      "$data": "reading.links"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "관심 주제를 물어보고 매일 아침 읽을거리 요약을 채워 줘"
+    }
+   ]
+  },
+  {
+   "version": 1,
+   "id": "project",
+   "title": "프로젝트",
+   "icon": "flag",
+   "blocks": [
+    {
+     "type": "progress",
+     "label": "마일스톤 1",
+     "value": {
+      "$data": "project.milestones.0.value"
+     },
+     "goal": {
+      "$data": "project.milestones.0.goal"
+     },
+     "unit": "%"
+    },
+    {
+     "type": "progress",
+     "label": "마일스톤 2",
+     "value": {
+      "$data": "project.milestones.1.value"
+     },
+     "goal": {
+      "$data": "project.milestones.1.goal"
+     },
+     "unit": "%"
+    },
+    {
+     "type": "progress",
+     "label": "마일스톤 3",
+     "value": {
+      "$data": "project.milestones.2.value"
+     },
+     "goal": {
+      "$data": "project.milestones.2.goal"
+     },
+     "unit": "%"
+    },
+    {
+     "type": "table",
+     "title": "이번 주 할 일",
+     "columns": [
+      "할 일",
+      "담당",
+      "상태"
+     ],
+     "rows": {
+      "$data": "project.week"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "진행 중인 프로젝트를 물어보고 프로젝트 탭을 채워 줘"
+    }
+   ]
+  }
+ ],
+ "blocks": [
+  {
+   "type": "heading",
+   "text": "이번 주"
+  },
+  {
+   "type": "text",
+   "text": "**굵게**와 [링크](https://example.com)를 쓸 수 있어요."
+  },
+  {
+   "type": "stat",
+   "label": "이번 달",
+   "value": 1520000,
+   "unit": "KRW",
+   "compare": 1310000,
+   "compareLabel": "지난달",
+   "better": "up"
+  },
+  {
+   "type": "stats",
+   "items": [
+    {
+     "label": "앱",
+     "value": 980000,
+     "unit": "KRW"
+    },
+    {
+     "label": "광고",
+     "value": 540000,
+     "unit": "KRW"
+    },
+    {
+     "label": "환불",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "type": "bars",
+   "title": "하루씩",
+   "unit": "KRW",
+   "items": [
+    {
+     "label": "11/5",
+     "value": 42000
+    },
+    {
+     "label": "11/6",
+     "value": 61000
+    },
+    {
+     "label": "11/7",
+     "value": 38000
+    },
+    {
+     "label": "11/8",
+     "value": 90500
+    },
+    {
+     "label": "11/9",
+     "value": 72000
+    }
+   ]
+  },
+  {
+   "type": "hbars",
+   "title": "어디서",
+   "unit": "KRW",
+   "items": [
+    {
+     "label": "앱스토어",
+     "value": 980000
+    },
+    {
+     "label": "광고",
+     "value": 410000
+    }
+   ]
+  },
+  {
+   "type": "line",
+   "title": "주별",
+   "labels": [
+    "1주",
+    "2주",
+    "3주",
+    "4주"
+   ],
+   "series": [
+    {
+     "name": "앱",
+     "values": [
+      210,
+      260,
+      240,
+      300
+     ]
+    },
+    {
+     "name": "광고",
+     "values": [
+      120,
+      110,
+      150,
+      140
+     ]
+    }
+   ]
+  },
+  {
+   "type": "progress",
+   "label": "이번 달 목표",
+   "value": 7,
+   "goal": 10
+  },
+  {
+   "type": "list",
+   "title": "최근",
+   "items": [
+    {
+     "title": "앱스토어 정산",
+     "subtitle": "11/10",
+     "value": "₩640,000"
+    },
+    {
+     "title": "광고",
+     "subtitle": "11/8",
+     "value": "₩210,000"
+    }
+   ]
+  },
+  {
+   "type": "table",
+   "title": "출처별",
+   "columns": [
+    "출처",
+    "이번 달",
+    "지난달"
+   ],
+   "rows": [
+    [
+     "앱스토어",
+     980000,
+     850000
+    ],
+    [
+     "광고",
+     540000,
+     460000
+    ]
+   ]
+  },
+  {
+   "type": "stackbars",
+   "title": "출처별 하루",
+   "unit": "KRW",
+   "labels": [
+    "11/5",
+    "11/6",
+    "11/7",
+    "11/8",
+    "11/9"
+   ],
+   "series": [
+    {
+     "name": "앱",
+     "values": [
+      30000,
+      42000,
+      25000,
+      61000,
+      50000
+     ]
+    },
+    {
+     "name": "광고",
+     "values": [
+      12000,
+      19000,
+      13000,
+      29500,
+      22000
+     ]
+    }
+   ]
+  },
+  {
+   "type": "groupbars",
+   "title": "분기별",
+   "labels": [
+    "1분기",
+    "2분기",
+    "3분기",
+    "4분기"
+   ],
+   "series": [
+    {
+     "name": "올해",
+     "values": [
+      120,
+      160,
+      140,
+      190
+     ]
+    },
+    {
+     "name": "작년",
+     "values": [
+      100,
+      130,
+      150,
+      150
+     ]
+    }
+   ]
+  },
+  {
+   "type": "area",
+   "title": "방문자",
+   "labels": [
+    "월",
+    "화",
+    "수",
+    "목",
+    "금",
+    "토",
+    "일"
+   ],
+   "series": [
+    {
+     "name": "방문",
+     "values": [
+      320,
+      410,
+      380,
+      520,
+      610,
+      450,
+      400
+     ]
+    },
+    {
+     "name": "가입",
+     "values": [
+      40,
+      52,
+      47,
+      80,
+      95,
+      60,
+      55
+     ]
+    }
+   ]
+  },
+  {
+   "type": "spark",
+   "label": "이번 주 매출",
+   "value": 482000,
+   "unit": "KRW",
+   "values": [
+    61000,
+    58000,
+    70000,
+    66000,
+    81000,
+    72000,
+    74000
+   ],
+   "better": "up"
+  },
+  {
+   "type": "donut",
+   "title": "어디서",
+   "unit": "KRW",
+   "items": [
+    {
+     "label": "앱스토어",
+     "value": 980000
+    },
+    {
+     "label": "광고",
+     "value": 410000
+    },
+    {
+     "label": "후원",
+     "value": 130000
+    }
+   ]
+  },
+  {
+   "type": "gauge",
+   "label": "디스크",
+   "value": 72,
+   "max": 100,
+   "unit": "%",
+   "better": "down"
+  },
+  {
+   "type": "heatmap",
+   "title": "요일×시간 접속",
+   "columns": [
+    "0",
+    "3",
+    "6",
+    "9",
+    "12",
+    "15",
+    "18",
+    "21"
+   ],
+   "rows": [
+    {
+     "label": "월",
+     "values": [
+      2,
+      1,
+      3,
+      9,
+      12,
+      10,
+      15,
+      8
+     ]
+    },
+    {
+     "label": "화",
+     "values": [
+      1,
+      0,
+      4,
+      10,
+      13,
+      11,
+      14,
+      9
+     ]
+    },
+    {
+     "label": "수",
+     "values": [
+      3,
+      1,
+      2,
+      8,
+      11,
+      14,
+      18,
+      12
+     ]
+    },
+    {
+     "label": "토",
+     "values": [
+      6,
+      4,
+      2,
+      5,
+      9,
+      12,
+      20,
+      17
+     ]
+    },
+    {
+     "label": "일",
+     "values": [
+      7,
+      5,
+      1,
+      4,
+      8,
+      10,
+      16,
+      14
+     ]
+    }
+   ]
+  },
+  {
+   "type": "calendar",
+   "title": "최근 14일",
+   "unit": "개",
+   "days": 14,
+   "items": [
+    {
+     "date": "2026-11-12",
+     "value": 0,
+     "entries": []
+    },
+    {
+     "date": "2026-11-13",
+     "value": 1,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-14",
+     "value": 2,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "12:10"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-15",
+     "value": 3,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "12:10"
+      },
+      {
+       "title": "책 20쪽",
+       "time": "22:40"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-16",
+     "value": 0,
+     "entries": []
+    },
+    {
+     "date": "2026-11-17",
+     "value": 1,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-18",
+     "value": 2,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "12:10"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-19",
+     "value": 3,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "12:10"
+      },
+      {
+       "title": "책 20쪽",
+       "time": "22:40"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-20",
+     "value": 0,
+     "entries": []
+    },
+    {
+     "date": "2026-11-21",
+     "value": 1,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-22",
+     "value": 2,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "12:10"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-23",
+     "value": 3,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "12:10"
+      },
+      {
+       "title": "책 20쪽",
+       "time": "22:40"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-24",
+     "value": 0,
+     "entries": []
+    },
+    {
+     "date": "2026-11-25",
+     "value": 1,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "07:30"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "scatter",
+   "title": "광고비와 매출",
+   "xLabel": "광고비",
+   "yLabel": "매출",
+   "items": [
+    {
+     "x": 10,
+     "y": 120,
+     "label": "1주"
+    },
+    {
+     "x": 18,
+     "y": 150,
+     "label": "2주"
+    },
+    {
+     "x": 25,
+     "y": 210,
+     "label": "3주"
+    },
+    {
+     "x": 32,
+     "y": 205,
+     "label": "4주"
+    },
+    {
+     "x": 40,
+     "y": 290,
+     "label": "5주"
+    }
+   ]
+  },
+  {
+   "type": "funnel",
+   "title": "가입 흐름",
+   "items": [
+    {
+     "label": "방문",
+     "value": 1200
+    },
+    {
+     "label": "가입 화면",
+     "value": 540
+    },
+    {
+     "label": "가입",
+     "value": 310
+    },
+    {
+     "label": "첫 결제",
+     "value": 72
+    }
+   ]
+  },
+  {
+   "type": "treemap",
+   "title": "비용 구성",
+   "unit": "USD",
+   "items": [
+    {
+     "label": "서버",
+     "value": 420
+    },
+    {
+     "label": "언어 모델",
+     "value": 310
+    },
+    {
+     "label": "저장소",
+     "value": 90
+    },
+    {
+     "label": "도메인",
+     "value": 25
+    },
+    {
+     "label": "기타",
+     "value": 40
+    }
+   ]
+  },
+  {
+   "type": "rank",
+   "title": "많이 팔린 것",
+   "unit": "개",
+   "limit": 5,
+   "items": [
+    {
+     "label": "머그컵",
+     "value": 128,
+     "tags": [
+      "주방"
+     ]
+    },
+    {
+     "label": "스티커",
+     "value": 342
+    },
+    {
+     "label": "티셔츠",
+     "value": 96
+    },
+    {
+     "label": "에코백",
+     "value": 77
+    },
+    {
+     "label": "키링",
+     "value": 51
+    },
+    {
+     "label": "노트",
+     "value": 12
+    }
+   ]
+  },
+  {
+   "type": "badges",
+   "items": [
+    {
+     "label": "배포 완료",
+     "tone": "ok"
+    },
+    {
+     "label": "검토 중",
+     "tone": "info"
+    },
+    {
+     "label": "경고 2",
+     "tone": "warn"
+    },
+    {
+     "label": "실패 1",
+     "tone": "danger"
+    },
+    {
+     "label": "v1.4"
+    }
+   ]
+  },
+  {
+   "type": "checklist",
+   "title": "오늘 할 일",
+   "items": [
+    {
+     "title": "정산 확인",
+     "done": true
+    },
+    {
+     "title": "광고 소재 교체",
+     "done": true,
+     "subtitle": "11/12 오후"
+    },
+    {
+     "title": "리뷰 답글 달기"
+    }
+   ]
+  },
+  {
+   "type": "timeline",
+   "title": "배포",
+   "items": [
+    {
+     "time": "09:10",
+     "title": "빌드 시작"
+    },
+    {
+     "time": "09:24",
+     "title": "테스트 통과",
+     "tone": "ok"
+    },
+    {
+     "time": "09:31",
+     "title": "경고 1건",
+     "subtitle": "디스크 72%",
+     "tone": "warn"
+    },
+    {
+     "time": "09:40",
+     "title": "배포 완료",
+     "tone": "ok"
+    }
+   ]
+  },
+  {
+   "type": "keyvalue",
+   "title": "서버",
+   "items": [
+    {
+     "label": "버전",
+     "value": "1.4.2"
+    },
+    {
+     "label": "가동 시간",
+     "value": "12일"
+    },
+    {
+     "label": "요청/분",
+     "value": 1840
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "warn",
+   "title": "정산 지연",
+   "text": "앱스토어 정산이 하루 늦어지고 있어요. 내일 다시 확인할게요."
+  },
+  {
+   "type": "image",
+   "url": "https://example.com/chart.png",
+   "caption": "예시 그림",
+   "ratio": 1.78
+  },
+  {
+   "type": "link",
+   "title": "앱스토어 커넥트",
+   "url": "https://appstoreconnect.apple.com",
+   "subtitle": "매출 보고서 열기"
+  },
+  {
+   "type": "countdown",
+   "label": "출시까지",
+   "to": "2026-11-18T13:47:11.609Z"
+  },
+  {
+   "type": "compare",
+   "title": "이번 달과 지난달",
+   "unit": "KRW",
+   "aLabel": "이번 달",
+   "aValue": 1520000,
+   "bLabel": "지난달",
+   "bValue": 1310000
+  },
+  {
+   "type": "status",
+   "title": "서비스",
+   "items": [
+    {
+     "label": "곁 서버",
+     "state": "ok",
+     "note": "응답 40ms"
+    },
+    {
+     "label": "Hermes 브리지",
+     "state": "warn",
+     "note": "재접속 2회"
+    },
+    {
+     "label": "결제 연동",
+     "state": "danger",
+     "note": "토큰 만료"
+    },
+    {
+     "label": "백업",
+     "state": "off",
+     "note": "꺼 둠"
+    }
+   ]
+  },
+  {
+   "type": "connections",
+   "title": "연결된 앱",
+   "items": [
+    {
+     "name": "구글 캘린더",
+     "icon": "calendar",
+     "state": "connected",
+     "account": "me@example.com",
+     "action": {
+      "label": "해제",
+      "say": "구글 캘린더 연결 끊어 줘",
+      "kind": "danger"
+     }
+    },
+    {
+     "name": "Gmail",
+     "icon": "mail",
+     "state": "expired",
+     "account": "me@example.com",
+     "action": {
+      "label": "다시 연결",
+      "url": "https://example.com/oauth",
+      "kind": "primary"
+     }
+    },
+    {
+     "name": "노션",
+     "icon": "book",
+     "state": "error",
+     "note": "권한 부족"
+    },
+    {
+     "name": "슬랙",
+     "icon": "message-square",
+     "state": "off",
+     "action": {
+      "label": "연결",
+      "say": "슬랙 연결해 줘"
+     }
+    }
+   ]
+  },
+  {
+   "type": "button",
+   "label": "에이전트에게 부탁하기",
+   "say": "이 화면 숫자 다시 채워 줘"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "heading",
+   "text": "가운데, 강조 색",
+   "align": "center",
+   "color": "accent"
+  },
+  {
+   "type": "text",
+   "text": "가운데 맞춘 작은 글이에요.",
+   "align": "center",
+   "size": "sub"
+  },
+  {
+   "type": "stat",
+   "link": {
+    "to": "costs",
+    "period": "month"
+   },
+   "label": "전환율",
+   "value": 3.456,
+   "unit": "%",
+   "compare": 3.1,
+   "compareLabel": "지난주",
+   "decimals": 1,
+   "color": "ok",
+   "showChange": false
+  },
+  {
+   "type": "stats",
+   "decimals": 1,
+   "items": [
+    {
+     "label": "평점",
+     "value": 4.62,
+     "color": "yellow"
+    },
+    {
+     "label": "응답률",
+     "value": 97.25,
+     "unit": "%",
+     "color": "ok"
+    },
+    {
+     "label": "불만",
+     "value": 2,
+     "color": "danger"
+    }
+   ]
+  },
+  {
+   "type": "bars",
+   "title": "하루씩",
+   "unit": "KRW",
+   "color": "purple",
+   "showHead": false,
+   "link": {
+    "to": "costs",
+    "period": "week"
+   },
+   "items": [
+    {
+     "label": "11/5",
+     "value": 42000
+    },
+    {
+     "label": "11/6",
+     "value": 61000
+    },
+    {
+     "label": "11/7",
+     "value": 38000
+    },
+    {
+     "label": "11/8",
+     "value": 90500,
+     "color": "danger"
+    },
+    {
+     "label": "11/9",
+     "value": 72000
+    }
+   ]
+  },
+  {
+   "type": "hbars",
+   "title": "값 순으로, 퍼센트 없이",
+   "unit": "KRW",
+   "color": "teal",
+   "sort": "value",
+   "showPercent": false,
+   "items": [
+    {
+     "label": "광고",
+     "value": 410000
+    },
+    {
+     "label": "앱스토어",
+     "value": 980000,
+     "color": "accent"
+    },
+    {
+     "label": "후원",
+     "value": 130000
+    }
+   ]
+  },
+  {
+   "type": "line",
+   "title": "점 없이, 눈금 없이",
+   "unit": "만원",
+   "showDots": false,
+   "showTicks": false,
+   "labels": [
+    "1주",
+    "2주",
+    "3주",
+    "4주"
+   ],
+   "series": [
+    {
+     "name": "앱",
+     "values": [
+      210,
+      260,
+      240,
+      300
+     ],
+     "color": "purple"
+    },
+    {
+     "name": "광고",
+     "values": [
+      120,
+      110,
+      150,
+      140
+     ],
+     "color": "teal"
+    }
+   ]
+  },
+  {
+   "type": "progress",
+   "label": "저축",
+   "value": 7.5,
+   "goal": 10,
+   "unit": "백만원",
+   "decimals": 1,
+   "color": "purple",
+   "showGoal": false
+  },
+  {
+   "type": "list",
+   "title": "꼬리표와 값 색",
+   "items": [
+    {
+     "title": "앱스토어 정산",
+     "subtitle": "11/10",
+     "value": "₩640,000",
+     "tags": [
+      "정산",
+      {
+       "label": "완료",
+       "color": "ok"
+      }
+     ],
+     "color": "ok",
+     "link": {
+      "to": "costs"
+     }
+    },
+    {
+     "title": "환불",
+     "subtitle": "11/8",
+     "value": "-₩21,000",
+     "tags": [
+      {
+       "label": "확인 필요",
+       "color": "warn"
+      }
+     ],
+     "color": "danger"
+    }
+   ]
+  },
+  {
+   "type": "table",
+   "title": "소수 한 자리",
+   "decimals": 1,
+   "columns": [
+    "출처",
+    "평점",
+    "응답률"
+   ],
+   "rows": [
+    [
+     "앱스토어",
+     4.62,
+     97.25
+    ],
+    [
+     "플레이",
+     4.38,
+     91.5
+    ]
+   ]
+  },
+  {
+   "type": "button",
+   "label": "진한 버튼",
+   "say": "이 화면 숫자 다시 채워 줘",
+   "kind": "primary"
+  },
+  {
+   "type": "divider",
+   "color": "accent"
+  },
+  {
+   "type": "stackbars",
+   "title": "색 지정, 머리 글 없이",
+   "unit": "KRW",
+   "showHead": false,
+   "labels": [
+    "11/5",
+    "11/6",
+    "11/7",
+    "11/8",
+    "11/9"
+   ],
+   "series": [
+    {
+     "name": "앱",
+     "values": [
+      30000,
+      42000,
+      25000,
+      61000,
+      50000
+     ],
+     "color": "purple"
+    },
+    {
+     "name": "광고",
+     "values": [
+      12000,
+      19000,
+      13000,
+      29500,
+      22000
+     ],
+     "color": "teal"
+    }
+   ]
+  },
+  {
+   "type": "groupbars",
+   "title": "범례 없이",
+   "showLegend": false,
+   "labels": [
+    "1분기",
+    "2분기",
+    "3분기",
+    "4분기"
+   ],
+   "series": [
+    {
+     "name": "올해",
+     "values": [
+      120,
+      160,
+      140,
+      190
+     ],
+     "color": "green"
+    },
+    {
+     "name": "작년",
+     "values": [
+      100,
+      130,
+      150,
+      150
+     ],
+     "color": "neutral"
+    }
+   ]
+  },
+  {
+   "type": "area",
+   "title": "점 표시, 색 지정",
+   "showDots": true,
+   "labels": [
+    "월",
+    "화",
+    "수",
+    "목",
+    "금",
+    "토",
+    "일"
+   ],
+   "series": [
+    {
+     "name": "방문",
+     "values": [
+      320,
+      410,
+      380,
+      520,
+      610,
+      450,
+      400
+     ],
+     "color": "teal"
+    }
+   ]
+  },
+  {
+   "type": "spark",
+   "label": "대기 시간",
+   "value": 1.84,
+   "unit": "초",
+   "decimals": 2,
+   "color": "purple",
+   "showChange": false,
+   "values": [
+    2.4,
+    2.1,
+    2.3,
+    1.9,
+    2,
+    1.8,
+    1.84
+   ]
+  },
+  {
+   "type": "donut",
+   "title": "값 순, 값으로 표시",
+   "unit": "KRW",
+   "sort": "value",
+   "showPercent": false,
+   "centerLabel": "합계",
+   "items": [
+    {
+     "label": "후원",
+     "value": 130000,
+     "color": "coral"
+    },
+    {
+     "label": "앱스토어",
+     "value": 980000,
+     "color": "teal"
+    },
+    {
+     "label": "광고",
+     "value": 410000,
+     "color": "yellow"
+    }
+   ]
+  },
+  {
+   "type": "gauge",
+   "label": "CPU",
+   "value": 41.25,
+   "max": 100,
+   "unit": "%",
+   "decimals": 1,
+   "color": "warn",
+   "showRange": false
+  },
+  {
+   "type": "heatmap",
+   "title": "색 지정, 눈금 없이",
+   "color": "coral",
+   "showTicks": false,
+   "columns": [
+    "0",
+    "6",
+    "12",
+    "18"
+   ],
+   "rows": [
+    {
+     "label": "평일",
+     "values": [
+      3,
+      5,
+      12,
+      18
+     ]
+    },
+    {
+     "label": "주말",
+     "values": [
+      8,
+      2,
+      9,
+      20
+     ]
+    }
+   ]
+  },
+  {
+   "type": "calendar",
+   "title": "보라 잔디, 머리 글 없이",
+   "color": "purple",
+   "showHead": false,
+   "days": 90,
+   "items": [
+    {
+     "date": "2026-08-28",
+     "value": 0
+    },
+    {
+     "date": "2026-08-29",
+     "value": 3
+    },
+    {
+     "date": "2026-08-30",
+     "value": 2
+    },
+    {
+     "date": "2026-08-31",
+     "value": 1
+    },
+    {
+     "date": "2026-09-01",
+     "value": 0
+    },
+    {
+     "date": "2026-09-02",
+     "value": 3
+    },
+    {
+     "date": "2026-09-03",
+     "value": 2
+    },
+    {
+     "date": "2026-09-04",
+     "value": 1
+    },
+    {
+     "date": "2026-09-05",
+     "value": 0
+    },
+    {
+     "date": "2026-09-06",
+     "value": 3
+    },
+    {
+     "date": "2026-09-07",
+     "value": 2
+    },
+    {
+     "date": "2026-09-08",
+     "value": 1
+    },
+    {
+     "date": "2026-09-09",
+     "value": 0
+    },
+    {
+     "date": "2026-09-10",
+     "value": 3
+    },
+    {
+     "date": "2026-09-11",
+     "value": 2
+    },
+    {
+     "date": "2026-09-12",
+     "value": 1
+    },
+    {
+     "date": "2026-09-13",
+     "value": 0
+    },
+    {
+     "date": "2026-09-14",
+     "value": 3
+    },
+    {
+     "date": "2026-09-15",
+     "value": 2
+    },
+    {
+     "date": "2026-09-16",
+     "value": 1
+    },
+    {
+     "date": "2026-09-17",
+     "value": 0
+    },
+    {
+     "date": "2026-09-18",
+     "value": 3
+    },
+    {
+     "date": "2026-09-19",
+     "value": 2
+    },
+    {
+     "date": "2026-09-20",
+     "value": 1
+    },
+    {
+     "date": "2026-09-21",
+     "value": 0
+    },
+    {
+     "date": "2026-09-22",
+     "value": 3
+    },
+    {
+     "date": "2026-09-23",
+     "value": 2
+    },
+    {
+     "date": "2026-09-24",
+     "value": 1
+    },
+    {
+     "date": "2026-09-25",
+     "value": 0
+    },
+    {
+     "date": "2026-09-26",
+     "value": 3
+    },
+    {
+     "date": "2026-09-27",
+     "value": 2
+    },
+    {
+     "date": "2026-09-28",
+     "value": 1
+    },
+    {
+     "date": "2026-09-29",
+     "value": 0
+    },
+    {
+     "date": "2026-09-30",
+     "value": 3
+    },
+    {
+     "date": "2026-10-01",
+     "value": 2
+    },
+    {
+     "date": "2026-10-02",
+     "value": 1
+    },
+    {
+     "date": "2026-10-03",
+     "value": 0
+    },
+    {
+     "date": "2026-10-04",
+     "value": 3
+    },
+    {
+     "date": "2026-10-05",
+     "value": 2
+    },
+    {
+     "date": "2026-10-06",
+     "value": 1
+    },
+    {
+     "date": "2026-10-07",
+     "value": 0
+    },
+    {
+     "date": "2026-10-08",
+     "value": 3
+    },
+    {
+     "date": "2026-10-09",
+     "value": 2
+    },
+    {
+     "date": "2026-10-10",
+     "value": 1
+    },
+    {
+     "date": "2026-10-11",
+     "value": 0
+    },
+    {
+     "date": "2026-10-12",
+     "value": 3
+    },
+    {
+     "date": "2026-10-13",
+     "value": 2
+    },
+    {
+     "date": "2026-10-14",
+     "value": 1
+    },
+    {
+     "date": "2026-10-15",
+     "value": 0
+    },
+    {
+     "date": "2026-10-16",
+     "value": 3
+    },
+    {
+     "date": "2026-10-17",
+     "value": 2
+    },
+    {
+     "date": "2026-10-18",
+     "value": 1
+    },
+    {
+     "date": "2026-10-19",
+     "value": 0
+    },
+    {
+     "date": "2026-10-20",
+     "value": 3
+    },
+    {
+     "date": "2026-10-21",
+     "value": 2
+    },
+    {
+     "date": "2026-10-22",
+     "value": 1
+    },
+    {
+     "date": "2026-10-23",
+     "value": 0
+    },
+    {
+     "date": "2026-10-24",
+     "value": 3
+    },
+    {
+     "date": "2026-10-25",
+     "value": 2
+    },
+    {
+     "date": "2026-10-26",
+     "value": 1
+    },
+    {
+     "date": "2026-10-27",
+     "value": 0
+    },
+    {
+     "date": "2026-10-28",
+     "value": 3
+    },
+    {
+     "date": "2026-10-29",
+     "value": 2
+    },
+    {
+     "date": "2026-10-30",
+     "value": 1
+    },
+    {
+     "date": "2026-10-31",
+     "value": 0
+    },
+    {
+     "date": "2026-11-01",
+     "value": 3
+    },
+    {
+     "date": "2026-11-02",
+     "value": 2
+    },
+    {
+     "date": "2026-11-03",
+     "value": 1
+    },
+    {
+     "date": "2026-11-04",
+     "value": 0
+    },
+    {
+     "date": "2026-11-05",
+     "value": 3
+    },
+    {
+     "date": "2026-11-06",
+     "value": 2
+    },
+    {
+     "date": "2026-11-07",
+     "value": 1
+    },
+    {
+     "date": "2026-11-08",
+     "value": 0
+    },
+    {
+     "date": "2026-11-09",
+     "value": 3
+    },
+    {
+     "date": "2026-11-10",
+     "value": 2
+    },
+    {
+     "date": "2026-11-11",
+     "value": 1
+    },
+    {
+     "date": "2026-11-12",
+     "value": 0
+    },
+    {
+     "date": "2026-11-13",
+     "value": 3
+    },
+    {
+     "date": "2026-11-14",
+     "value": 2
+    },
+    {
+     "date": "2026-11-15",
+     "value": 1
+    },
+    {
+     "date": "2026-11-16",
+     "value": 0
+    },
+    {
+     "date": "2026-11-17",
+     "value": 3
+    },
+    {
+     "date": "2026-11-18",
+     "value": 2
+    },
+    {
+     "date": "2026-11-19",
+     "value": 1
+    },
+    {
+     "date": "2026-11-20",
+     "value": 0
+    },
+    {
+     "date": "2026-11-21",
+     "value": 3
+    },
+    {
+     "date": "2026-11-22",
+     "value": 2
+    },
+    {
+     "date": "2026-11-23",
+     "value": 1
+    },
+    {
+     "date": "2026-11-24",
+     "value": 0
+    },
+    {
+     "date": "2026-11-25",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "type": "scatter",
+   "title": "점마다 색",
+   "xLabel": "광고비",
+   "yLabel": "매출",
+   "color": "teal",
+   "decimals": 1,
+   "items": [
+    {
+     "x": 10.4,
+     "y": 120
+    },
+    {
+     "x": 18.2,
+     "y": 150
+    },
+    {
+     "x": 25.9,
+     "y": 90,
+     "label": "이상치",
+     "color": "danger"
+    },
+    {
+     "x": 40.1,
+     "y": 290
+    }
+   ]
+  },
+  {
+   "type": "funnel",
+   "title": "단계 전환율 없이",
+   "color": "green",
+   "showStep": false,
+   "items": [
+    {
+     "label": "방문",
+     "value": 1200
+    },
+    {
+     "label": "가입",
+     "value": 310
+    },
+    {
+     "label": "첫 결제",
+     "value": 72,
+     "color": "coral"
+    }
+   ]
+  },
+  {
+   "type": "treemap",
+   "title": "색 지정, 값 없이",
+   "showValue": false,
+   "items": [
+    {
+     "label": "서버",
+     "value": 420,
+     "color": "teal"
+    },
+    {
+     "label": "언어 모델",
+     "value": 310,
+     "color": "purple"
+    },
+    {
+     "label": "저장소",
+     "value": 90,
+     "color": "neutral"
+    }
+   ]
+  },
+  {
+   "type": "rank",
+   "title": "1등만 강조, 입력 순",
+   "unit": "개",
+   "highlight": 1,
+   "color": "coral",
+   "sort": "input",
+   "showBar": false,
+   "items": [
+    {
+     "label": "스티커",
+     "value": 342,
+     "tags": [
+      "문구",
+      {
+       "label": "신상",
+       "color": "ok"
+      }
+     ]
+    },
+    {
+     "label": "머그컵",
+     "value": 128,
+     "tags": [
+      "주방"
+     ],
+     "link": {
+      "to": "routines"
+     }
+    },
+    {
+     "label": "티셔츠",
+     "value": 96,
+     "tags": [
+      "의류"
+     ],
+     "accent": true,
+     "color": "purple"
+    },
+    {
+     "label": "키링",
+     "value": 51
+    }
+   ]
+  },
+  {
+   "type": "badges",
+   "items": [
+    {
+     "label": "보라",
+     "color": "purple"
+    },
+    {
+     "label": "청록",
+     "color": "teal"
+    },
+    {
+     "label": "직접 색",
+     "color": "#C2410C"
+    }
+   ]
+  },
+  {
+   "type": "checklist",
+   "title": "진행 막대 없이, 꼬리표",
+   "color": "accent",
+   "showProgress": false,
+   "items": [
+    {
+     "title": "정산 확인",
+     "done": true,
+     "tags": [
+      "돈"
+     ]
+    },
+    {
+     "title": "리뷰 답글 달기",
+     "tags": [
+      {
+       "label": "급함",
+       "color": "danger"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "timeline",
+   "title": "색과 꼬리표",
+   "items": [
+    {
+     "time": "09:10",
+     "title": "빌드",
+     "color": "purple",
+     "tags": [
+      "CI"
+     ]
+    },
+    {
+     "time": "09:40",
+     "title": "배포",
+     "color": "teal",
+     "tags": [
+      {
+       "label": "운영",
+       "color": "danger"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "keyvalue",
+   "title": "꼬리표, 값 색, 소수 둘째",
+   "decimals": 2,
+   "items": [
+    {
+     "label": "평균 응답",
+     "value": 41.237,
+     "tags": [
+      "ms"
+     ]
+    },
+    {
+     "label": "오류율",
+     "value": 0.4,
+     "color": "danger"
+    }
+   ]
+  },
+  {
+   "type": "callout",
+   "tone": "ok",
+   "color": "purple",
+   "showIcon": false,
+   "title": "아이콘 없이",
+   "text": "색은 보라로 바꿨어요."
+  },
+  {
+   "type": "image",
+   "url": "https://example.com/chart.png",
+   "caption": "정사각, 잘리지 않게",
+   "ratio": 1,
+   "fit": "contain"
+  },
+  {
+   "type": "link",
+   "title": "디자인 문서",
+   "url": "https://example.com/design",
+   "color": "green"
+  },
+  {
+   "type": "countdown",
+   "label": "정산까지",
+   "to": "2026-11-16T10:47:11.610Z",
+   "color": "accent",
+   "showDate": false
+  },
+  {
+   "type": "compare",
+   "title": "막대 없이",
+   "unit": "건",
+   "aLabel": "이번 주",
+   "aValue": 132,
+   "bLabel": "지난주",
+   "bValue": 118,
+   "aColor": "green",
+   "bColor": "neutral",
+   "showBar": false
+  },
+  {
+   "type": "connections",
+   "title": "계정 숨김, 줄 링크",
+   "showAccount": false,
+   "items": [
+    {
+     "name": "구글 드라이브",
+     "icon": "hard-drive",
+     "state": "connected",
+     "account": "me@example.com",
+     "link": {
+      "to": "routines"
+     }
+    },
+    {
+     "name": "깃허브",
+     "icon": "github",
+     "state": "off",
+     "action": {
+      "label": "연결",
+      "say": "깃허브 연결해 줘",
+      "kind": "accentSoft"
+     }
+    }
+   ]
+  },
+  {
+   "type": "status",
+   "title": "메모 없이, 꼬리표",
+   "showNote": false,
+   "items": [
+    {
+     "label": "곁 서버",
+     "state": "ok",
+     "tags": [
+      "맥"
+     ]
+    },
+    {
+     "label": "야간 작업",
+     "state": "warn",
+     "color": "purple",
+     "tags": [
+      {
+       "label": "예약",
+       "color": "purple"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "search",
+   "placeholder": "주문 찾기"
+  },
+  {
+   "type": "search",
+   "placeholder": "메모 제목만",
+   "targets": [
+    "메모"
+   ],
+   "fields": [
+    "title"
+   ]
+  }
+ ]
+}

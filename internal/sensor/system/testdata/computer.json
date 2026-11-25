@@ -1,0 +1,175 @@
+{
+ "version": 1,
+ "id": "computer",
+ "title": "내 컴퓨터",
+ "icon": "internaldrive",
+ "blocks": [
+  {
+   "type": "refresh",
+   "bundles": [
+    "netwatch",
+    "disk",
+    "system"
+   ],
+   "style": "icon"
+  },
+  {
+   "type": "stats",
+   "style": "tiles",
+   "items": [
+    {
+     "label": "공유기",
+     "value": {
+      "$data": "netwatch.now.gw_ms"
+     },
+     "unit": "ms",
+     "color": "blue",
+     "decimals": 1
+    },
+    {
+     "label": "외부",
+     "value": {
+      "$data": "netwatch.now.wan_ms"
+     },
+     "unit": "ms",
+     "color": "purple",
+     "decimals": 1
+    },
+    {
+     "label": "남은 용량",
+     "value": {
+      "$data": "disk.free_gb"
+     },
+     "unit": "GB",
+     "decimals": 0
+    }
+   ]
+  },
+  {
+   "type": "stats",
+   "style": "tiles",
+   "items": [
+    {
+     "label": "CPU",
+     "value": {
+      "$data": "system.cpu_pct"
+     },
+     "unit": "%",
+     "color": "teal",
+     "decimals": 0
+    },
+    {
+     "label": "메모리",
+     "value": {
+      "$data": "system.mem_used_gb"
+     },
+     "unit": "GB",
+     "decimals": 1
+    },
+    {
+     "label": "배터리",
+     "value": {
+      "$data": "system.battery_pct"
+     },
+     "unit": "%",
+     "color": "green",
+     "decimals": 0
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "네트워크"
+  },
+  {
+   "type": "status",
+   "showNote": true,
+   "items": {
+    "$data": "netwatch.status"
+   }
+  },
+  {
+   "type": "line",
+   "title": "최근 약 20분",
+   "unit": "ms",
+   "decimals": 1,
+   "showLegend": true,
+   "showDots": false,
+   "labels": {
+    "$data": "netwatch.flow.labels"
+   },
+   "series": {
+    "$data": "netwatch.flow.series"
+   }
+  },
+  {
+   "type": "timeline",
+   "items": {
+    "$data": "netwatch.incidents"
+   }
+  },
+  {
+   "type": "heading",
+   "text": "디스크"
+  },
+  {
+   "type": "keyvalue",
+   "decimals": 1,
+   "items": [
+    {
+     "label": "쓴 용량 / 전체",
+     "value": {
+      "$data": "disk.usage"
+     }
+    },
+    {
+     "label": "사용률(%)",
+     "value": {
+      "$data": "disk.used_pct"
+     }
+    },
+    {
+     "label": "상태",
+     "value": {
+      "$data": "disk.status"
+     }
+    },
+    {
+     "label": "잰 시각",
+     "value": {
+      "$data": "disk.checked"
+     }
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "text": "시스템"
+  },
+  {
+   "type": "status",
+   "showNote": true,
+   "items": {
+    "$data": "system.status"
+   }
+  },
+  {
+   "type": "keyvalue",
+   "decimals": 1,
+   "items": [
+    {
+     "label": "스왑(GB)",
+     "value": {
+      "$data": "system.swap_gb"
+     }
+    },
+    {
+     "label": "잰 시각",
+     "value": {
+      "$data": "system.checked"
+     }
+    }
+   ]
+  }
+ ]
+}

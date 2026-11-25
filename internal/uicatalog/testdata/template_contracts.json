@@ -1,0 +1,624 @@
+[
+ {
+  "id": "revenue",
+  "title": "수익",
+  "bundle": "revenue",
+  "shape": "`month{total,prev}`, `daily[{label,value}]`, `bySource[{label,value}]`",
+  "spec": {
+   "version": 1,
+   "id": "revenue",
+   "title": "수익",
+   "icon": "chart.line.uptrend.xyaxis",
+   "blocks": [
+    {
+     "type": "stat",
+     "label": "이번 달",
+     "value": {
+      "$data": "revenue.month.total"
+     },
+     "unit": "KRW",
+     "compare": {
+      "$data": "revenue.month.prev"
+     },
+     "compareLabel": "지난달",
+     "better": "up"
+    },
+    {
+     "type": "bars",
+     "title": "하루씩",
+     "unit": "KRW",
+     "items": {
+      "$data": "revenue.daily"
+     }
+    },
+    {
+     "type": "hbars",
+     "title": "어디서 벌었나",
+     "unit": "KRW",
+     "items": {
+      "$data": "revenue.bySource"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "수익 탭에 내 수익 데이터를 채워 줘. 어디서 가져올지 먼저 물어봐 줘"
+    }
+   ]
+  },
+  "value": {
+   "month": {
+    "total": 1520000,
+    "prev": 1310000
+   },
+   "daily": [
+    {
+     "label": "11/5",
+     "value": 42000
+    },
+    {
+     "label": "11/6",
+     "value": 61000
+    },
+    {
+     "label": "11/7",
+     "value": 38000
+    },
+    {
+     "label": "11/8",
+     "value": 90500
+    },
+    {
+     "label": "11/9",
+     "value": 72000
+    },
+    {
+     "label": "11/10",
+     "value": 55000
+    },
+    {
+     "label": "11/11",
+     "value": 81000
+    }
+   ],
+   "bySource": [
+    {
+     "label": "앱스토어",
+     "value": 980000
+    },
+    {
+     "label": "광고",
+     "value": 410000
+    },
+    {
+     "label": "제휴",
+     "value": 130000
+    }
+   ]
+  }
+ },
+ {
+  "id": "habits",
+  "title": "습관",
+  "bundle": "habits",
+  "shape": "`streak`, `goals[{value,goal}]`, `today[{title,value}]`, `days[{date,value,entries[{title,time,note}]}]`",
+  "spec": {
+   "version": 1,
+   "id": "habits",
+   "title": "습관",
+   "icon": "checkmark.seal",
+   "blocks": [
+    {
+     "type": "stat",
+     "label": "연속 일수",
+     "value": {
+      "$data": "habits.streak"
+     },
+     "unit": "일째",
+     "better": "up"
+    },
+    {
+     "type": "progress",
+     "label": "목표 1",
+     "value": {
+      "$data": "habits.goals.0.value"
+     },
+     "goal": {
+      "$data": "habits.goals.0.goal"
+     }
+    },
+    {
+     "type": "progress",
+     "label": "목표 2",
+     "value": {
+      "$data": "habits.goals.1.value"
+     },
+     "goal": {
+      "$data": "habits.goals.1.goal"
+     }
+    },
+    {
+     "type": "progress",
+     "label": "목표 3",
+     "value": {
+      "$data": "habits.goals.2.value"
+     },
+     "goal": {
+      "$data": "habits.goals.2.goal"
+     }
+    },
+    {
+     "type": "list",
+     "title": "오늘 체크",
+     "items": {
+      "$data": "habits.today"
+     }
+    },
+    {
+     "type": "calendar",
+     "title": "최근 14일",
+     "days": 14,
+     "unit": "개",
+     "items": {
+      "$data": "habits.days"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "내 습관 목록과 이번 주 기록을 먼저 물어보고 습관 탭을 채워 줘"
+    }
+   ]
+  },
+  "value": {
+   "streak": 12,
+   "goals": [
+    {
+     "value": 5,
+     "goal": 7
+    },
+    {
+     "value": 3,
+     "goal": 4
+    },
+    {
+     "value": 18,
+     "goal": 30
+    }
+   ],
+   "today": [
+    {
+     "title": "물 2L",
+     "value": "완료"
+    },
+    {
+     "title": "스트레칭 10분",
+     "value": "완료"
+    },
+    {
+     "title": "책 20쪽",
+     "value": "남음"
+    }
+   ],
+   "days": [
+    {
+     "date": "2026-11-24",
+     "value": 2,
+     "entries": [
+      {
+       "title": "물 2L",
+       "time": "21:10"
+      },
+      {
+       "title": "스트레칭 10분",
+       "time": "07:30",
+       "note": "아침에"
+      }
+     ]
+    },
+    {
+     "date": "2026-11-25",
+     "value": 1,
+     "entries": [
+      {
+       "title": "책 20쪽",
+       "time": "23:05"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "id": "todos",
+  "title": "할 일",
+  "bundle": "todos",
+  "shape": "`open`, `dueToday`, `items[{title,subtitle,value}]`",
+  "spec": {
+   "version": 1,
+   "id": "todos",
+   "title": "할 일",
+   "icon": "checklist",
+   "blocks": [
+    {
+     "type": "stats",
+     "items": [
+      {
+       "label": "남은 할 일",
+       "value": {
+        "$data": "todos.open"
+       }
+      },
+      {
+       "label": "오늘 마감",
+       "value": {
+        "$data": "todos.dueToday"
+       }
+      }
+     ]
+    },
+    {
+     "type": "list",
+     "title": "할 일",
+     "items": {
+      "$data": "todos.items"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "할 일을 어디서 가져올지 먼저 물어보고 할 일 탭을 채워 줘"
+    }
+   ]
+  },
+  "value": {
+   "open": 7,
+   "dueToday": 2,
+   "items": [
+    {
+     "title": "분기 보고서 초안",
+     "subtitle": "오늘 18:00",
+     "value": "마감"
+    },
+    {
+     "title": "치과 예약",
+     "subtitle": "오늘",
+     "value": "마감"
+    },
+    {
+     "title": "여행 숙소 비교",
+     "subtitle": "11/15"
+    }
+   ]
+  }
+ },
+ {
+  "id": "workout",
+  "title": "운동",
+  "bundle": "workout",
+  "shape": "`week{count,minutes}`, `daily[{label,value}]`, `recent[{title,subtitle,value}]`",
+  "spec": {
+   "version": 1,
+   "id": "workout",
+   "title": "운동",
+   "icon": "figure.run",
+   "blocks": [
+    {
+     "type": "stats",
+     "items": [
+      {
+       "label": "이번 주 횟수",
+       "value": {
+        "$data": "workout.week.count"
+       },
+       "unit": "회"
+      },
+      {
+       "label": "이번 주 시간",
+       "value": {
+        "$data": "workout.week.minutes"
+       },
+       "unit": "분"
+      }
+     ]
+    },
+    {
+     "type": "bars",
+     "title": "하루씩",
+     "unit": "분",
+     "items": {
+      "$data": "workout.daily"
+     }
+    },
+    {
+     "type": "list",
+     "title": "최근 기록",
+     "items": {
+      "$data": "workout.recent"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "운동 기록을 어디서 가져올지 물어보고 운동 탭을 채워 줘"
+    }
+   ]
+  },
+  "value": {
+   "week": {
+    "count": 3,
+    "minutes": 140
+   },
+   "daily": [
+    {
+     "label": "11/5",
+     "value": 30
+    },
+    {
+     "label": "11/6",
+     "value": 0
+    },
+    {
+     "label": "11/7",
+     "value": 45
+    },
+    {
+     "label": "11/8",
+     "value": 0
+    },
+    {
+     "label": "11/9",
+     "value": 65
+    },
+    {
+     "label": "11/10",
+     "value": 0
+    },
+    {
+     "label": "11/11",
+     "value": 0
+    }
+   ],
+   "recent": [
+    {
+     "title": "달리기 5km",
+     "subtitle": "11/9",
+     "value": "32분"
+    },
+    {
+     "title": "근력",
+     "subtitle": "11/7",
+     "value": "45분"
+    }
+   ]
+  }
+ },
+ {
+  "id": "assets",
+  "title": "자산",
+  "bundle": "assets",
+  "shape": "`total`, `prev`, `byKind[{label,value}]`, `months[]`, `series[{name,values[]}]`",
+  "spec": {
+   "version": 1,
+   "id": "assets",
+   "title": "자산",
+   "icon": "banknote",
+   "blocks": [
+    {
+     "type": "stat",
+     "label": "총자산",
+     "value": {
+      "$data": "assets.total"
+     },
+     "unit": "KRW",
+     "compare": {
+      "$data": "assets.prev"
+     },
+     "compareLabel": "지난달",
+     "better": "up"
+    },
+    {
+     "type": "hbars",
+     "title": "자산별",
+     "unit": "KRW",
+     "items": {
+      "$data": "assets.byKind"
+     }
+    },
+    {
+     "type": "line",
+     "title": "월별",
+     "labels": {
+      "$data": "assets.months"
+     },
+     "series": {
+      "$data": "assets.series"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "자산 항목을 물어보고 자산 탭을 채워 줘. 계좌 비밀번호나 인증 정보는 받지 말고 숫자만 받아"
+    }
+   ]
+  },
+  "value": {
+   "total": 52300000,
+   "prev": 50100000,
+   "byKind": [
+    {
+     "label": "예금",
+     "value": 21000000
+    },
+    {
+     "label": "주식",
+     "value": 24500000
+    },
+    {
+     "label": "연금",
+     "value": 6800000
+    }
+   ],
+   "months": [
+    "6월",
+    "7월",
+    "8월",
+    "9월",
+    "10월",
+    "11월"
+   ],
+   "series": [
+    {
+     "name": "총자산",
+     "values": [
+      44.1,
+      45.8,
+      47,
+      48.2,
+      50.1,
+      52.3
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "id": "reading",
+  "title": "읽을거리",
+  "bundle": "reading",
+  "shape": "`links[{title,subtitle}]`",
+  "spec": {
+   "version": 1,
+   "id": "reading",
+   "title": "읽을거리",
+   "icon": "newspaper",
+   "blocks": [
+    {
+     "type": "text",
+     "text": "아직 오늘 요약이 없어요. 아래 버튼으로 에이전트에게 부탁해 보세요."
+    },
+    {
+     "type": "list",
+     "title": "링크",
+     "items": {
+      "$data": "reading.links"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "관심 주제를 물어보고 매일 아침 읽을거리 요약을 채워 줘"
+    }
+   ]
+  },
+  "value": {
+   "links": [
+    {
+     "title": "오늘의 기술 뉴스 요약",
+     "subtitle": "3분"
+    },
+    {
+     "title": "주말에 읽을 긴 글",
+     "subtitle": "12분"
+    }
+   ]
+  }
+ },
+ {
+  "id": "project",
+  "title": "프로젝트",
+  "bundle": "project",
+  "shape": "`milestones[{value,goal}]`, `week[[…]]`",
+  "spec": {
+   "version": 1,
+   "id": "project",
+   "title": "프로젝트",
+   "icon": "flag",
+   "blocks": [
+    {
+     "type": "progress",
+     "label": "마일스톤 1",
+     "value": {
+      "$data": "project.milestones.0.value"
+     },
+     "goal": {
+      "$data": "project.milestones.0.goal"
+     },
+     "unit": "%"
+    },
+    {
+     "type": "progress",
+     "label": "마일스톤 2",
+     "value": {
+      "$data": "project.milestones.1.value"
+     },
+     "goal": {
+      "$data": "project.milestones.1.goal"
+     },
+     "unit": "%"
+    },
+    {
+     "type": "progress",
+     "label": "마일스톤 3",
+     "value": {
+      "$data": "project.milestones.2.value"
+     },
+     "goal": {
+      "$data": "project.milestones.2.goal"
+     },
+     "unit": "%"
+    },
+    {
+     "type": "table",
+     "title": "이번 주 할 일",
+     "columns": [
+      "할 일",
+      "담당",
+      "상태"
+     ],
+     "rows": {
+      "$data": "project.week"
+     }
+    },
+    {
+     "type": "button",
+     "label": "에이전트에게 채워 달라고 하기",
+     "say": "진행 중인 프로젝트를 물어보고 프로젝트 탭을 채워 줘"
+    }
+   ]
+  },
+  "value": {
+   "milestones": [
+    {
+     "value": 100,
+     "goal": 100
+    },
+    {
+     "value": 60,
+     "goal": 100
+    },
+    {
+     "value": 10,
+     "goal": 100
+    }
+   ],
+   "week": [
+    [
+     "화면 설계",
+     "나",
+     "끝"
+    ],
+    [
+     "서버 연결",
+     "나",
+     "진행"
+    ],
+    [
+     "시험",
+     "팀",
+     "대기"
+    ]
+   ]
+  }
+ }
+]

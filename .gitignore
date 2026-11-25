@@ -1,0 +1,10 @@
+bin/
+data/
+dist/
+.env
+
+# state left by tools
+.omc/
+.serena/
+.claude/
+.DS_Store
