@@ -3,6 +3,7 @@ package server
 import (
 	"cmp"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -37,9 +38,12 @@ func (h *hub) attachAgent(p *peer, a store.AgentAuth, token string) bool {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	if cur, err := h.store.AgentByToken(token); err != nil || cur.ID != a.ID {
-		if removed, _ := h.store.AgentRemoved(a.ID); removed {
+		switch removed, err := h.store.AgentRemoved(a.ID); {
+		case removed:
 			p.close(4001, "agent unlinked")
-		} else {
+		case errors.Is(err, store.ErrNotFound): // the owner's account was deleted with its agents
+			p.close(4003, "account deleted")
+		default:
 			p.close(4002, "token rotated")
 		}
 		return false

@@ -120,3 +120,34 @@ func TestMessagesFromStalePeerAreDropped(t *testing.T) {
 		t.Fatalf("current peer must still work: %v", err)
 	}
 }
+
+// The owner's account is deleted between the token check and hub registration: the agent hears 4003, not "token rotated".
+func TestAttachAfterAccountDeletedSaysAccountDeleted(t *testing.T) {
+	srv := newLocal(t)
+	owner, _, err := srv.store.CreateOwner("leaver")
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, token, err := srv.hub.CreateAgent(owner, "orphan")
+	if err != nil {
+		t.Fatal(err)
+	}
+	auth, err := srv.store.AgentByToken(token)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := srv.hub.DeleteOwner(owner); err != nil {
+		t.Fatal(err)
+	}
+	p, conn := wsPeer(t, srv)
+	if srv.hub.attachAgent(p, auth, token) {
+		t.Fatal("deleted account's agent must not attach")
+	}
+	closedWith(t, conn, 4003)
+	srv.hub.mu.Lock()
+	attached := srv.hub.agents[a.ID] != nil
+	srv.hub.mu.Unlock()
+	if attached {
+		t.Fatal("peer registered for a deleted account")
+	}
+}
