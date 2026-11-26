@@ -157,3 +157,23 @@ func TestPairServerPublicURL(t *testing.T) {
 		}
 	}
 }
+
+func TestPlainLANWarns(t *testing.T) {
+	cases := []struct {
+		spec string
+		tls  bool
+		warn bool
+	}{
+		{defaultNets, false, true},
+		{"lan", false, true},
+		{"192.168.0.0/24", false, true}, // public-ok
+		{defaultNets, true, false},
+		{"loopback,tailscale", false, false},
+		{"loopback", false, false},
+	}
+	for _, c := range cases {
+		if got := plainLAN(c.spec, c.tls); got != c.warn {
+			t.Errorf("%q tls=%v: warn=%v", c.spec, c.tls, got)
+		}
+	}
+}

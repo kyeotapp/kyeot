@@ -6,6 +6,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"log"
+	"net"
 	"net/netip"
 	"os"
 	"strings"
@@ -81,6 +82,25 @@ func openToInternet(spec string) bool {
 		a, ok := netip.AddrFromSlice(n.IP)
 		if !ok || !localPrefix(netip.PrefixFrom(a, ones)) {
 			return true
+		}
+	}
+	return false
+}
+
+// plainLAN reports whether the accepted networks include a private LAN while serving without https.
+func plainLAN(spec string, tls bool) bool {
+	if tls {
+		return false
+	}
+	nets, err := server.ParseNets(spec)
+	if err != nil {
+		return false
+	}
+	for _, n := range nets {
+		for _, ip := range []net.IP{net.IPv4(10, 0, 0, 1), net.IPv4(172, 16, 0, 1), net.IPv4(192, 168, 0, 1)} {
+			if n.Contains(ip) {
+				return true
+			}
 		}
 	}
 	return false

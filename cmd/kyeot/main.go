@@ -183,6 +183,9 @@ func main() {
 	if err := checkPlain(env("NETS", defaultNets), cert != "", truthy(getenv("ALLOW_PLAIN"))); err != nil {
 		log.Fatal(err)
 	}
+	if plainLAN(env("NETS", defaultNets), cert != "") {
+		log.Print("warning: local network (lan) is allowed without https, so the access key travels unencrypted there. On public or shared Wi-Fi, connect over Tailscale instead")
+	}
 	if _, err := publicURL(); err != nil {
 		log.Fatal(err)
 	}
