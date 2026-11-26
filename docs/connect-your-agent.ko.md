@@ -51,7 +51,7 @@ curl -s -H "Authorization: Bearer $KYEOT_OWNER_TOKEN" -d '{"name":"내 봇"}' ht
 | `message` | `task`, `text` | 답을 보낼 때. 마크다운의 제목, 목록, 코드, 인용, 굵게, 링크를 그린다 |
 | `draft` | `task`, `text` | 쓰는 중인 답을 미리 보여 줄 때. 화면에만 흘리고 저장하지 않는다. 끝나면 `message` 로 완성본을 보낸다 |
 | `tool` | `task`, `call`, `phase` (`started`, `completed`), `name`, `summary`, (`ok` 참거짓, `detail`) | 도구를 부를 때와 끝났을 때. 같은 `call` 의 두 메시지가 화면에서 한 줄로 합쳐진다 |
-| `approval` | `task`, `id`, `question`, `options` 문자열 배열, (`kind`) | 사람에게 확인받을 때. 대화가 `waiting` 으로 바뀐다. `kind` 가 `choice` 면 확인 버튼 대신 대화 안에 번호 목록으로 그린다 |
+| `approval` | `task`, `id`, `question`, `options` 문자열 배열, (`kind`) | 사람에게 확인받을 때. 대화가 `waiting` 으로 바뀐다. `kind` 가 `choice` 면 확인 버튼 대신 대화 안에 번호 목록으로 그린다. 같은 대화에서 `id` 를 다시 보내면 앞의 열린 요청을 대신한다 |
 | `artifact` | `task`, `name`, `url` | 만든 파일이나 페이지를 보여 줄 때 |
 | `task.end` | `task`, `result` (`done`, `failed`, `cancelled`) | **매 답 끝에 반드시.** 대화 한 번을 끝낼 때. 이미 끝났거나 사용자가 취소한 대화의 상태는 바꾸지 않는다. 안 보내면 대화가 진행 중으로 남는다(「최소 계약」의 보완 규칙 참고) |
 | `reaction` | `task`, `emoji` (16바이트 이하) | 사용자의 마지막 말에 이모지를 달 때 |

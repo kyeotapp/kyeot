@@ -51,7 +51,7 @@ Fields with no type noted are strings. Fields in parentheses are optional. `task
 | `message` | `task`, `text` | When sending a reply. Markdown headings, lists, code, quotes, bold, and links are rendered |
 | `draft` | `task`, `text` | When previewing a reply in progress. It is only streamed to the screen, not stored. Send the finished version with `message` when done |
 | `tool` | `task`, `call`, `phase` (`started`, `completed`), `name`, `summary`, (`ok` boolean, `detail`) | When calling a tool and when it finishes. The two messages with the same `call` merge into one line on screen |
-| `approval` | `task`, `id`, `question`, `options` string array, (`kind`) | When asking a human to confirm. The conversation changes to `waiting`. If `kind` is `choice`, it is drawn as a numbered list in the conversation instead of confirm buttons |
+| `approval` | `task`, `id`, `question`, `options` string array, (`kind`) | When asking a human to confirm. The conversation changes to `waiting`. If `kind` is `choice`, it is drawn as a numbered list in the conversation instead of confirm buttons. Sending an `id` again in the same conversation replaces the earlier open request |
 | `artifact` | `task`, `name`, `url` | When showing a file or page you made |
 | `task.end` | `task`, `result` (`done`, `failed`, `cancelled`) | **Always, at the end of every reply.** When ending one round of the conversation. It does not change the state of a conversation that already ended or that the user cancelled. Without it the conversation stays in progress (see the fallback rules in "Minimum contract") |
 | `reaction` | `task`, `emoji` (16 bytes or less) | When adding an emoji to the user's last message |

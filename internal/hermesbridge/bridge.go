@@ -5,6 +5,8 @@ package hermesbridge
 import (
 	"cmp"
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -77,6 +79,7 @@ type Bridge struct {
 	conn     *websocket.Conn
 	runs     map[string]*run // task id → active run
 	approval int
+	apPrefix string                                 // differs per start so approval ids never repeat within a task
 	titles   map[string]string                      // task id → last title sent
 	asks     map[string]string                      // task id → user's last message
 	pending  []protocol.AgentMessage                // replies and task.end queued while disconnected
@@ -105,14 +108,15 @@ const sensorReq = "sensor"
 
 func New(cfg Config) *Bridge {
 	b := &Bridge{
-		cfg:     cfg,
-		hermes:  &hermes{base: strings.TrimRight(cfg.HermesURL, "/"), key: cfg.HermesKey, http: &http.Client{}},
-		runs:    map[string]*run{},
-		titles:  map[string]string{},
-		asks:    map[string]string{},
-		sent:    map[string]bool{},
-		workers: map[string]chan protocol.ServerMessage{},
-		running: map[string]bool{},
+		cfg:      cfg,
+		hermes:   &hermes{base: strings.TrimRight(cfg.HermesURL, "/"), key: cfg.HermesKey, http: &http.Client{}},
+		runs:     map[string]*run{},
+		titles:   map[string]string{},
+		asks:     map[string]string{},
+		sent:     map[string]bool{},
+		workers:  map[string]chan protocol.ServerMessage{},
+		running:  map[string]bool{},
+		apPrefix: approvalPrefix(),
 	}
 	if cfg.SensorDir != "" {
 		nw := netwatch.New(filepath.Join(cfg.SensorDir, netwatch.BundleName), b.pushSensor(netwatch.BundleName))
@@ -692,6 +696,12 @@ func withQuote(text, quote string) string {
 		return text
 	}
 	return "> " + strings.ReplaceAll(quote, "\n", "\n> ") + "\n\n" + text
+}
+
+func approvalPrefix() string {
+	b := make([]byte, 4)
+	rand.Read(b)
+	return hex.EncodeToString(b)
 }
 
 var subagentFailed = []string{"failed", "error", "timeout"}

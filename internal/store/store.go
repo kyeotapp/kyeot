@@ -968,11 +968,14 @@ SELECT e.id, e.task_id, e.source, e.type, e.payload, e.created_at
 FROM events e JOIN tasks t ON t.id = e.task_id
 WHERE t.owner_id = ? AND e.type = 'approval' AND t.state = 'waiting'
   AND t.agent_id IN (SELECT id FROM agents WHERE removed_at IS NULL)
-  AND NOT EXISTS (
-    SELECT 1 FROM events r
-    WHERE r.task_id = e.task_id AND r.type = 'approval_result'
-      AND json_extract(r.payload, '$.id') = json_extract(e.payload, '$.id'))
+  AND NOT ` + approvalClosed + `
 ORDER BY e.id`
+
+// approvalClosed: a later result or newer request with e's id closes e (ids can repeat in a task).
+const approvalClosed = `EXISTS (
+    SELECT 1 FROM events r
+    WHERE r.task_id = e.task_id AND r.type IN ('approval_result', 'approval') AND r.id > e.id
+      AND json_extract(r.payload, '$.id') = json_extract(e.payload, '$.id'))`
 
 // LastAgentText is the text of the task's last agent message; empty string if none.
 func (s *Store) LastAgentText(taskID string) string {

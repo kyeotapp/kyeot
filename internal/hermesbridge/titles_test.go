@@ -56,9 +56,7 @@ func TestBridgeSendsHermesTitleAfterRun(t *testing.T) {
 	var task protocol.Task
 	h.API("POST", "/api/tasks", map[string]string{"agentId": agent.Agent.ID, "text": "Tidy up the downloads folder"}, &task)
 	h.WaitFor(c, "blocked", decktest.AgentState(agent.Agent.ID, "blocked"))
-	var pending []protocol.Event
-	h.API("GET", "/api/approvals", nil, &pending)
-	h.API("POST", "/api/tasks/"+task.ID+"/approvals/ap-1", map[string]string{"choice": "한 번 허용"}, nil)
+	h.API("POST", "/api/tasks/"+task.ID+"/approvals/"+pendingID(t, h), map[string]string{"choice": "한 번 허용"}, nil)
 	h.WaitFor(c, "done", decktest.TaskState(task.ID, "done"))
 
 	put("deck-"+task.ID, "Downloads folder\ntidy", time.Now()) // Hermes names the conversation after the reply

@@ -185,7 +185,7 @@ func (b *Bridge) offerApproval(ctx context.Context, task string, r *run, ap appr
 		return
 	}
 	b.approval++
-	msg.ID = fmt.Sprintf("ap-%d", b.approval)
+	msg.ID = fmt.Sprintf("ap-%s-%d", b.apPrefix, b.approval)
 	ap.msg = msg
 	r.approvals[msg.ID] = ap
 	b.mu.Unlock()

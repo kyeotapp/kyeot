@@ -54,8 +54,7 @@ func (s *Store) LastEventSource(taskID string) string {
 func (s *Store) UnansweredApprovals(taskID string) int {
 	var n int
 	s.db.QueryRow(`SELECT count(*) FROM events e WHERE e.task_id = ? AND e.type = 'approval'
-		AND NOT EXISTS (SELECT 1 FROM events r WHERE r.task_id = e.task_id AND r.type = 'approval_result'
-		                AND json_extract(r.payload, '$.id') = json_extract(e.payload, '$.id'))`, taskID).Scan(&n)
+		AND NOT `+approvalClosed, taskID).Scan(&n)
 	return n
 }
 
@@ -63,9 +62,7 @@ func (s *Store) UnansweredApprovals(taskID string) int {
 func (s *Store) SameApprovalPending(taskID, id string, payload []byte) (bool, error) {
 	var n int
 	err := s.db.QueryRow(`SELECT count(*) FROM events e WHERE e.task_id = ? AND e.type = 'approval'
-		AND json_extract(e.payload, '$.id') = ? AND e.payload = ?
-		AND NOT EXISTS (SELECT 1 FROM events r WHERE r.task_id = e.task_id AND r.type = 'approval_result' AND r.id > e.id
-		                AND json_extract(r.payload, '$.id') = ?)`, taskID, id, string(payload), id).Scan(&n)
+		AND json_extract(e.payload, '$.id') = ? AND e.payload = ? AND NOT `+approvalClosed, taskID, id, string(payload)).Scan(&n)
 	return n > 0, err
 }
 

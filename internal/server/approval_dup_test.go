@@ -66,3 +66,60 @@ func TestResentApprovalIsIgnoredUntilAnswered(t *testing.T) {
 		t.Fatalf("approval with different content: %d", n)
 	}
 }
+
+// A bridge restart restarts its numbering, so an answered id can return in the same task as a new approval; it must be answerable.
+func TestReusedApprovalIDCanBeAnswered(t *testing.T) {
+	h := decktest.New(t)
+	a := h.CreateAgent("bot")
+	c := h.ConnectClient()
+	agent := rawAgent(t, h, a.Token)
+	h.WaitFor(c, "idle", decktest.AgentState(a.Agent.ID, "idle"))
+	var task protocol.Task
+	h.API("POST", "/api/tasks", map[string]string{"agentId": a.Agent.ID, "text": "ask me"}, &task)
+	ctx := context.Background()
+	agent.Send(ctx, protocol.AgentMessage{Type: "approval", Task: task.ID, ID: "ap-1", Question: "Delete it?", Options: []string{"Yes", "No"}})
+	h.WaitFor(c, "waiting", decktest.TaskState(task.ID, "waiting"))
+	if s := h.API("POST", "/api/tasks/"+task.ID+"/approvals/ap-1", map[string]string{"choice": "Yes"}, nil); s != http.StatusNoContent {
+		t.Fatalf("first answer: %d", s)
+	}
+	h.WaitFor(c, "running", decktest.TaskState(task.ID, "running"))
+	agent.Send(ctx, protocol.AgentMessage{Type: "approval", Task: task.ID, ID: "ap-1", Question: "Move it?", Options: []string{"Yes", "No"}})
+	h.WaitFor(c, "waiting again", decktest.TaskState(task.ID, "waiting"))
+	var pending []protocol.Event
+	if h.API("GET", "/api/approvals", nil, &pending); len(pending) != 1 || !bytes.Contains(pending[0].Payload, []byte("Move it?")) {
+		t.Fatalf("pending: %+v", pending)
+	}
+	// answering another approval must keep the task waiting on the reused id
+	agent.Send(ctx, protocol.AgentMessage{Type: "approval", Task: task.ID, ID: "ap-2", Question: "Also this?", Options: []string{"Yes", "No"}})
+	agent.Send(ctx, protocol.AgentMessage{Type: "message", Task: task.ID, Text: "endmark0"})
+	h.WaitFor(c, "marker0", func(m protocol.ClientMessage) bool {
+		return m.Type == "event" && m.Event.TaskID == task.ID && m.Event.Type == "message"
+	})
+	if s := h.API("POST", "/api/tasks/"+task.ID+"/approvals/ap-2", map[string]string{"choice": "Yes"}, nil); s != http.StatusNoContent {
+		t.Fatalf("other answer: %d", s)
+	}
+	if h.API("GET", "/api/approvals", nil, &pending); len(pending) != 1 || !bytes.Contains(pending[0].Payload, []byte("Move it?")) {
+		t.Fatalf("reused id hidden after another answer: %+v", pending)
+	}
+	if s := h.API("POST", "/api/tasks/"+task.ID+"/approvals/ap-1", map[string]string{"choice": "No"}, nil); s != http.StatusNoContent {
+		t.Fatalf("second answer: %d", s)
+	}
+	h.WaitFor(c, "running again", decktest.TaskState(task.ID, "running"))
+	// a newer request with the same id replaces the open one
+	agent.Send(ctx, protocol.AgentMessage{Type: "approval", Task: task.ID, ID: "ap-1", Question: "Copy it?", Options: []string{"Yes", "No"}})
+	agent.Send(ctx, protocol.AgentMessage{Type: "approval", Task: task.ID, ID: "ap-1", Question: "Rename it?", Options: []string{"Rename", "Keep"}})
+	agent.Send(ctx, protocol.AgentMessage{Type: "message", Task: task.ID, Text: "endmark"})
+	h.WaitFor(c, "marker", func(m protocol.ClientMessage) bool {
+		return m.Type == "event" && m.Event.TaskID == task.ID && m.Event.Type == "message"
+	})
+	if h.API("GET", "/api/approvals", nil, &pending); len(pending) != 1 || !bytes.Contains(pending[0].Payload, []byte("Rename it?")) {
+		t.Fatalf("only the newer request is open: %+v", pending)
+	}
+	if s := h.API("POST", "/api/tasks/"+task.ID+"/approvals/ap-1", map[string]string{"choice": "Rename"}, nil); s != http.StatusNoContent {
+		t.Fatalf("answer to the newer: %d", s)
+	}
+	h.WaitFor(c, "running after the newer", decktest.TaskState(task.ID, "running"))
+	if h.API("GET", "/api/approvals", nil, &pending); len(pending) != 0 {
+		t.Fatalf("the replaced request is still open: %+v", pending)
+	}
+}
