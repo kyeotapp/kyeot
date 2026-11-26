@@ -30,11 +30,42 @@ type fakeHermes struct {
 	sessions  []string
 	inputs    []string
 	instructs []string
-	approvals []map[string]string
+	approvals []map[string]any
 	stops     []string
 	clarifies []map[string]any
 	n         int
 	expired   bool // the approval already expired on the Hermes side
+	stale     bool // the run moved past the approval's execution_generation
+	legacy    bool // Hermes without session_authority: no generation, loose approval body
+	dropGen   bool // approval events lose execution_generation while the endpoint stays strict
+	fail5xx   int  // this many approval calls answer 503 first
+}
+
+const approvalGeneration = 3
+
+// hermesStoreError is the error body api_server_authority_runs.store_error_response writes.
+func hermesStoreError(w http.ResponseWriter, reason string, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	fmt.Fprintf(w, `{"error":{"message":%q,"type":"invalid_request_error","code":%q}}`, reason, reason)
+}
+
+// authorityRespond mirrors respond_run of Hermes 0.22.4: exact key set, int generation equal to the run's.
+func authorityRespond(w http.ResponseWriter, body map[string]any, field string, generation int, stale bool) bool {
+	if len(body) != 3 || body["request_id"] == nil || body[field] == nil {
+		hermesStoreError(w, "invalid_params", http.StatusBadRequest)
+		return false
+	}
+	if _, ok := body["execution_generation"]; !ok {
+		hermesStoreError(w, "invalid_params", http.StatusBadRequest)
+		return false
+	}
+	g, ok := body["execution_generation"].(float64)
+	if !ok || g != float64(int(g)) || int(g) != generation || stale {
+		hermesStoreError(w, "stale_generation", http.StatusConflict)
+		return false
+	}
+	return true
 }
 
 func newFakeHermes(t *testing.T) (*fakeHermes, string) {
@@ -61,6 +92,7 @@ func newFakeHermes(t *testing.T) (*fakeHermes, string) {
 		f.inputs = append(f.inputs, body["input"])
 		f.instructs = append(f.instructs, body["instructions"])
 		first := f.n == 1
+		legacy := f.legacy || f.dropGen
 		f.mu.Unlock()
 		if strings.Contains(body["input"], "slow start") { // blocking the read loop prevents answering the server ping
 			time.Sleep(600 * time.Millisecond)
@@ -93,8 +125,12 @@ func newFakeHermes(t *testing.T) (*fakeHermes, string) {
 			ch <- ev(id, "tool.started", map[string]any{"tool": "terminal", "preview": "ls ~/Downloads", "tool_call_id": "tc1"})
 			ch <- ev(id, "tool.completed", map[string]any{"tool": "terminal", "duration": 0.42, "error": false, "tool_call_id": "tc1"})
 			ch <- ev(id, "message.delta", map[string]any{"delta": "Looked at the list.\n\nI will delete the old folder."})
-			ch <- ev(id, "approval.request", map[string]any{"command": "rm -rf ~/Downloads/old", "description": "delete files",
-				"pattern_key": "recursive delete", "choices": []string{"once", "session", "always", "deny"}, "request_id": "req-1"})
+			fields := map[string]any{"command": "rm -rf ~/Downloads/old", "description": "delete files",
+				"pattern_key": "recursive delete", "choices": []string{"once", "session", "always", "deny"}, "request_id": "req-1"}
+			if !legacy {
+				fields["execution_generation"] = approvalGeneration
+			}
+			ch <- ev(id, "approval.request", fields)
 		} else {
 			ch <- ev(id, "message.delta", map[string]any{"delta": "Continuing "})
 			ch <- ev(id, "message.delta", map[string]any{"delta": "replying"})
@@ -125,14 +161,25 @@ func newFakeHermes(t *testing.T) (*fakeHermes, string) {
 		}
 	}))
 	mux.HandleFunc("POST /v1/runs/{id}/approval", auth(func(w http.ResponseWriter, r *http.Request) {
-		var body map[string]string
+		var body map[string]any
 		json.NewDecoder(r.Body).Decode(&body)
 		id := r.PathValue("id")
 		f.mu.Lock()
 		f.approvals = append(f.approvals, body)
 		ch := f.runs[id]
-		expired := f.expired
+		expired, stale, legacy := f.expired, f.stale, f.legacy
+		busy := f.fail5xx > 0
+		if busy {
+			f.fail5xx--
+		}
 		f.mu.Unlock()
+		if busy {
+			hermesStoreError(w, "storage_unavailable", http.StatusServiceUnavailable)
+			return
+		}
+		if !legacy && !authorityRespond(w, body, "choice", approvalGeneration, stale) {
+			return
+		}
 		if expired {
 			http.Error(w, `{"error":{"message":"Run has no pending approval","code":"approval_not_pending"}}`, http.StatusConflict)
 			return
@@ -142,7 +189,7 @@ func newFakeHermes(t *testing.T) (*fakeHermes, string) {
 		} else {
 			ch <- ev(id, "run.completed", map[string]any{"output": "Tidied up"})
 		}
-		json.NewEncoder(w).Encode(map[string]string{"run_id": id, "choice": body["choice"]})
+		json.NewEncoder(w).Encode(map[string]string{"run_id": id, "choice": fmt.Sprint(body["choice"])})
 	}))
 	mux.HandleFunc("POST /v1/runs/{id}/clarify", auth(func(w http.ResponseWriter, r *http.Request) {
 		var body map[string]any
@@ -152,6 +199,9 @@ func newFakeHermes(t *testing.T) (*fakeHermes, string) {
 		f.clarifies = append(f.clarifies, body)
 		ch := f.runs[id]
 		f.mu.Unlock()
+		if !authorityRespond(w, body, "answer", 7, false) {
+			return
+		}
 		ch <- ev(id, "run.completed", map[string]any{"output": fmt.Sprint(body["answer"], " it is")})
 		json.NewEncoder(w).Encode(map[string]string{"run_id": id})
 	}))
@@ -181,10 +231,10 @@ func ev(runID, name string, fields map[string]any) string {
 	return string(raw)
 }
 
-func (f *fakeHermes) snapshot() (sessions []string, approvals []map[string]string, stops []string) {
+func (f *fakeHermes) snapshot() (sessions []string, approvals []map[string]any, stops []string) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	return append([]string(nil), f.sessions...), append([]map[string]string(nil), f.approvals...), append([]string(nil), f.stops...)
+	return append([]string(nil), f.sessions...), append([]map[string]any(nil), f.approvals...), append([]string(nil), f.stops...)
 }
 
 func startBridge(t *testing.T, h *decktest.Harness, hermesURL, key string) decktest.Created {
@@ -261,7 +311,8 @@ func TestBridgeApprovalAndFollowUp(t *testing.T) {
 	h.WaitFor(c, "bridge idle again", decktest.AgentState(agent.Agent.ID, "idle"))
 
 	_, approvals, _ := hermes.snapshot()
-	if len(approvals) != 1 || approvals[0]["choice"] != "once" || approvals[0]["request_id"] != "req-1" {
+	if len(approvals) != 1 || approvals[0]["choice"] != "once" || approvals[0]["request_id"] != "req-1" ||
+		approvals[0]["execution_generation"] != float64(approvalGeneration) || len(approvals[0]) != 3 {
 		t.Fatalf("hermes approval: %v", approvals)
 	}
 
@@ -561,7 +612,7 @@ func TestBridgeExplainsExpiredApproval(t *testing.T) {
 	hermes.mu.Unlock()
 
 	h.API("POST", "/api/tasks/"+task.ID+"/approvals/"+ap.ID, map[string]string{"choice": "한 번 허용"}, nil)
-	h.WaitFor(c, "expired notice", eventWith(task.ID, "message", "승인 시간이 지나"))
+	h.WaitFor(c, "expired notice", eventWith(task.ID, "message", "승인 시간이 지났어요"))
 }
 
 func TestBridgeRunRoutineOutlivesMinuteAndReportsFailure(t *testing.T) {

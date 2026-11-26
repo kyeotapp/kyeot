@@ -66,6 +66,7 @@ type run struct {
 	id         string
 	approvals  map[string]approval
 	superseded bool // taken over by a new run after 409
+	closed     bool // the bridge already ended the task; the stream reports nothing more
 }
 
 type Bridge struct {
@@ -486,6 +487,7 @@ func (b *Bridge) handle(ctx context.Context, msg protocol.ServerMessage) {
 		r := b.runs[msg.Task]
 		b.mu.Unlock()
 		if r != nil {
+			b.denyPending(ctx, r)
 			if err := b.hermes.stop(ctx, r.id); err != nil {
 				log.Printf("stop %s: %v", r.id, err)
 			}
@@ -516,7 +518,13 @@ func (b *Bridge) userInput(ctx context.Context, task, text, instructions string)
 	b.mu.Lock()
 	r := b.runs[task]
 	b.mu.Unlock()
-	if r != nil {
+	if r != nil && b.supersedeIfWaiting(r) {
+		// A run parked on an approval cannot take steer, and a new run would queue behind it.
+		b.denyPending(ctx, r)
+		if err := b.hermes.stop(ctx, r.id); err != nil {
+			log.Printf("stop %s: %v", r.id, err)
+		}
+	} else if r != nil {
 		err := b.hermes.steer(ctx, r.id, text)
 		var se *statusError
 		if err == nil {
@@ -598,9 +606,9 @@ func (b *Bridge) stream(ctx context.Context, task string, self *run) {
 			b.send(protocol.AgentMessage{Type: "tool", Task: task, Call: subCall(ev, calls), Phase: "completed",
 				Name: "subagent", Summary: summary, OK: &ok})
 		case "approval.request":
-			b.requestApproval(task, ev, reply.String())
+			b.requestApproval(ctx, task, self, ev, reply.String())
 		case "clarify.request":
-			b.requestChoice(task, ev)
+			b.requestChoice(ctx, task, self, ev)
 		case "message.delta":
 			reply.WriteString(ev.Delta)
 			if time.Since(lastDraft) > draftEvery {
@@ -622,7 +630,8 @@ func (b *Bridge) stream(ctx context.Context, task string, self *run) {
 	b.mu.Lock()
 	cur := b.runs[task]
 	replaced := self.superseded || (cur != nil && cur != self)
-	if cur == self {
+	closed := self.closed
+	if cur == self && !closed { // closeRun removes a closed run after its task.end
 		delete(b.runs, task)
 		delete(b.asks, task)
 		now := time.Now()
@@ -638,6 +647,10 @@ func (b *Bridge) stream(ctx context.Context, task string, self *run) {
 	}
 	b.mu.Unlock()
 
+	if closed {
+		b.publishStatus()
+		return
+	}
 	if result == "" {
 		result, finalText = protocol.TaskFailed, fmt.Sprintf("Hermes 이벤트 스트림이 끊겼다: %v", err)
 	}

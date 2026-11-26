@@ -122,7 +122,7 @@ func TestBridgeResendsApprovalAskedWhileDisconnected(t *testing.T) {
 	h.WaitFor(c, "draft", func(m protocol.ClientMessage) bool { return m.Type == "draft" && m.TaskID == task.ID })
 
 	cutBridge(h, agent)
-	hermes.push("run_1", "approval.request", map[string]any{"command": "rm -rf ~/x", "description": "delete files", "choices": []string{"once", "deny"}, "request_id": "req-9"})
+	hermes.push("run_1", "approval.request", map[string]any{"command": "rm -rf ~/x", "description": "delete files", "choices": []string{"once", "deny"}, "request_id": "req-9", "execution_generation": approvalGeneration})
 	h.WaitFor(c, "approval after reconnect", eventWith(task.ID, "approval", "rm -rf ~/x"))
 	h.WaitFor(c, "back online", decktest.AgentState(agent.Agent.ID, "blocked"))
 

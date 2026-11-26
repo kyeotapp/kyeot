@@ -67,6 +67,7 @@ go test -race ./internal/store/... ./internal/server/...
 
 When you change a test, confirm it fails on a copy with one guard broken.
 Not covered by tests: the steer success path for an in-progress run (the fake Hermes always returns 409).
+The fake Hermes mirrors the key set and generation checks for approval and clarify of Hermes 0.22.4 (`api_server_authority_runs.respond_run`). A new Hermes can change them, so run `sh scripts/check-hermes-live.sh` against the real one before a release.
 
 ## Pitfalls
 

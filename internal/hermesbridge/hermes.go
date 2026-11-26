@@ -118,10 +118,15 @@ func (h *hermes) steer(ctx context.Context, runID, text string) error {
 	return h.post(ctx, "/v1/runs/"+runID+"/steer", map[string]string{"text": text}, nil)
 }
 
-func (h *hermes) approve(ctx context.Context, runID, choice, requestID string) error {
-	body := map[string]string{"choice": choice}
+// approve answers an approval. With session_authority Hermes needs exactly request_id, execution_generation and choice;
+// older Hermes sends no generation and reads only choice and request_id.
+func (h *hermes) approve(ctx context.Context, runID, choice, requestID string, generation json.RawMessage) error {
+	body := map[string]any{"choice": choice}
 	if requestID != "" {
 		body["request_id"] = requestID
+	}
+	if len(generation) > 0 && string(generation) != "null" {
+		body["execution_generation"] = generation
 	}
 	return h.post(ctx, "/v1/runs/"+runID+"/approval", body, nil)
 }

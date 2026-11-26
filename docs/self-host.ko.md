@@ -102,6 +102,8 @@
 
 다른 컴퓨터가 받는 실행 파일과 설치 스크립트는 이 저장소(`kyeotapp/kyeot`)의 GitHub Releases 에 둔다. `scripts/release-build.sh <판>` 이 `dist/<판>/` 에 `kyeot_darwin_arm64`, `kyeot_darwin_amd64`, `kyeot_linux_arm64`, `kyeot_linux_amd64`, `install.sh`(`scripts/install.sh` 사본)와 `checksums.txt`(이 다섯 파일의 `shasum -a 256`)를 만든다. 이어서 `~/.config/kyeot/release-signing/id_ed25519`(없으면 `scripts/release-key.sh` 로 만든다) 로 `checksums.txt` 에 `ssh-keygen -Y sign -n kyeot-release` 서명을 해 `checksums.txt.sig` 를 만든다. 키가 없으면 빌드하지 않는다. `install.sh` 는 스크립트에 박힌 공개 키로 이 서명을 확인한 뒤에만 체크섬을 믿고, 서명이 없거나 맞지 않으면 설치하지 않는다. 키를 바꾸면 `install.sh` 의 `RELEASE_PUBKEY` 도 바꿔 새 릴리스를 latest 로 올린다. 판은 `x.y.z` 숫자 꼴만 받는다. 빌드는 `CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=<판>"` 이고, DB 가 순수 Go 인 `modernc.org/sqlite` 라 맥에서 리눅스 판까지 교차 빌드된다. 그 폴더의 파일을 전부 `v<판>` 태그 릴리스에 올린다(`gh release create v<판> dist/<판>/kyeot_* dist/<판>/install.sh dist/<판>/checksums.txt dist/<판>/VERSION dist/<판>/checksums.txt.sig -R kyeotapp/kyeot`). 사용자는 `releases/latest/download/install.sh` 로 가장 최근 릴리스의 스크립트를 받으므로, 스크립트를 바꾼 릴리스는 최신(latest)으로 올려야 한다. 스크립트는 서버의 `/version` 이 알려 준 판을 받으므로 서버도 같은 판으로 빌드해 둔다. 스크립트 상단의 `MIN_VERSION` 보다 낮은 판은 받지 않으니, 옛 판에 보안 결함이 있으면 그 값을 올린다. 판은 `kyeot version` 으로 본다.
 
+릴리스 전과 Hermes 판이 바뀔 때마다 Hermes 가 있는 컴퓨터에서 `sh scripts/check-hermes-live.sh` 를 돌린다. 메모리 안의 시험 서버로 실제 Hermes 에 승인, 거절, clarify, 중지를 한 번씩 거친다.
+
 ## 서버 첫 실행과 에이전트 연결
 
 에이전트는 주지 않고 깔린 에이전트를 서버가 찾아 붙인다. 서버는 시작할 때 이 컴퓨터의 Hermes 를 찾기만 하고, 붙이는 것은 사용자가 앱에서 연결을 누른 뒤다. 앱이 서버에 붙으면 「이 컴퓨터에서 Hermes 를 찾았어요. 연결할까요?」를 묻는다.
