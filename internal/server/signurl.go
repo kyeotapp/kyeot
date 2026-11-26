@@ -7,9 +7,9 @@ import (
 	"github.com/kyeotapp/kyeot/internal/protocol"
 )
 
-// signEvent re-signs the attachment URLs in an event against the current time. The stored record is unchanged.
+// signEvent re-signs the attachment URLs in a person's event against the current time. The stored record is unchanged.
 func (s *Server) signEvent(e protocol.Event) protocol.Event {
-	if !bytes.Contains(e.Payload, []byte(`"attachments"`)) {
+	if e.Source != "user" || !bytes.Contains(e.Payload, []byte(`"attachments"`)) {
 		return e
 	}
 	var m map[string]json.RawMessage

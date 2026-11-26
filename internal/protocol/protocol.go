@@ -398,6 +398,7 @@ func ParseAgentMessage(raw []byte) (AgentMessage, json.RawMessage, bool) {
 	}
 	delete(fields, "type")
 	delete(fields, "task")
+	delete(fields, "attachments") // only people attach files
 	payload, _ := json.Marshal(fields)
 	return msg, payload, true
 }

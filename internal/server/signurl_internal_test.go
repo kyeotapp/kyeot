@@ -42,7 +42,7 @@ func TestSignEventReplacesStoredURL(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer s.Close()
-	e := protocol.Event{Payload: json.RawMessage(`{"text":"photo","attachments":[{"id":"f1","name":"a.png","mime":"image/png","size":1,"url":"/api/uploads/f1?sig=old"}]}`)}
+	e := protocol.Event{Source: "user", Payload: json.RawMessage(`{"text":"photo","attachments":[{"id":"f1","name":"a.png","mime":"image/png","size":1,"url":"/api/uploads/f1?sig=old"}]}`)}
 	var out struct {
 		Text        string
 		Attachments []protocol.Attachment
@@ -54,5 +54,19 @@ func TestSignEventReplacesStoredURL(t *testing.T) {
 	r := httptest.NewRequest("GET", out.Attachments[0].URL, nil)
 	if !s.signedOK(r, "f1") {
 		t.Fatal("resigned url not accepted")
+	}
+}
+
+func TestSignEventSkipsAgentEvents(t *testing.T) {
+	s, err := New(Options{DBPath: ":memory:", OwnerToken: "owner-token-0123456789"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	for _, src := range []string{"agent", "system", ""} {
+		e := protocol.Event{Source: src, Payload: json.RawMessage(`{"text":"x","attachments":[{"id":"f1","name":"a.png","mime":"image/png","size":1}]}`)}
+		if out := s.signEvent(e); strings.Contains(string(out.Payload), "sig=") {
+			t.Fatalf("%q event signed: %s", src, out.Payload)
+		}
 	}
 }
