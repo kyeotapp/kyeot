@@ -2,6 +2,8 @@ module github.com/kyeotapp/kyeot
 
 go 1.27.1
 
+toolchain go1.27.4
+
 require (
 	github.com/coder/websocket v1.8.15
 	github.com/google/uuid v1.6.0
