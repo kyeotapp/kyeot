@@ -76,6 +76,10 @@ type Options struct {
 	LinkPreviewFetcher *linkpreview.Fetcher // for tests. nil means the real internet
 	// Access log destination (KYEOT_ACCESS_LOG). nil means off
 	AccessLog io.Writer
+	// Newest-release file checked once at start and every LatestEvery (KYEOT_UPDATE_CHECK). Empty means off. Must be https
+	LatestURL    string
+	LatestEvery  time.Duration // 0 means 24 hours
+	LatestClient *http.Client  // for tests (transport only)
 }
 
 type Server struct {
@@ -103,6 +107,7 @@ type Server struct {
 	closed       atomic.Bool  // the whole server was deleted and closed
 	leaveMu      sync.Mutex   // serializes ownership handover and server close, as one unit from token file swap to DB
 	previews     *linkPreviews
+	latest       atomic.Pointer[string] // newest released version seen by latestLoop
 }
 
 func New(opts Options) (*Server, error) {
@@ -169,6 +174,10 @@ func New(opts Options) (*Server, error) {
 	s.bg.Add(2)
 	go s.sweepLoop()
 	go s.backupLoop()
+	if opts.LatestURL != "" && releaseVersion.MatchString(opts.Version) && !s.closed.Load() {
+		s.bg.Add(1)
+		go s.latestLoop()
+	}
 	return s, nil
 }
 

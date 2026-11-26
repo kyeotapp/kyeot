@@ -155,6 +155,14 @@ func isOff(v string) bool {
 	return false
 }
 
+// latestURL is where the server reads the newest release number once a day. KYEOT_UPDATE_CHECK=off turns it off.
+func latestURL() string {
+	if isOff(getenv("UPDATE_CHECK")) {
+		return ""
+	}
+	return server.DefaultLatestURL
+}
+
 // sensorDir is the sensor (network and disk) record folder. With KYEOT_SENSORS=off (0, false, no) it is empty, so sensors stay off.
 func sensorDir(dataDir string) string {
 	if dataDir == "" || isOff(getenv("SENSORS")) {

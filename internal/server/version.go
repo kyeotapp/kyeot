@@ -19,6 +19,10 @@ func (s *Server) versionRoutes() {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Cache-Control", "no-store")
-		json.NewEncoder(w).Encode(map[string]any{"version": s.opts.Version, "protocol": Protocol, "minClientProtocol": MinClientProtocol, "features": s.features(), "avatarPresets": store.MotionPresets, "closed": s.closed.Load(), "serverId": s.store.ServerID()})
+		body := map[string]any{"version": s.opts.Version, "protocol": Protocol, "minClientProtocol": MinClientProtocol, "features": s.features(), "avatarPresets": store.MotionPresets, "closed": s.closed.Load(), "serverId": s.store.ServerID()}
+		if v := s.latestVersion(); v != "" {
+			body["latest"] = v // newest public release, from the daily update check
+		}
+		json.NewEncoder(w).Encode(body)
 	})
 }

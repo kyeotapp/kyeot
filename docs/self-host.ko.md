@@ -39,6 +39,8 @@
 
 업데이트는 `kyeot update` 로 한다. 최신 릴리스를 읽고, `checksums.txt` 의 서명을 kyeot 에 박힌 키로, 파일의 sha256 을 확인한 뒤(설치 스크립트와 같은 확인), 돌던 판을 옆에 `kyeot.prev` 로 남기고 바꾸고, 등록된 서버·연결 서비스를 다시 켠다. `kyeot update --check` 는 새 판이 있는지만 알린다. 설치 명령을 다시 실행해도 업데이트된다. `kyeot update` 는 0.1.6 부터 있으니 0.1.5 이하는 설치 명령을 다시 실행한다.
 
+0.1.6 보다 새 서버는 새 판이 나오면 알려 준다. 서버가 켜진 직후 한 번, 그 뒤 24시간마다 `https://github.com/kyeotapp/kyeot/releases/latest/download/VERSION` 을 읽어 `GET /version` 에 `latest` 로 싣는다. 요청에는 기본 HTTP 머리말과 `User-Agent: kyeot/<판>` 만 실린다. `HTTPS_PROXY` 를 따른다. 계정, 토큰, 서버 id, 데이터는 보내지 않는다. 내려받기가 늘 그렇듯 GitHub 은 서버의 IP 주소를 본다. 확인이 실패하면 서버 기록에 한 줄만 남긴다. 앱은 설정 › 서버에 서버 판을 보이고, 서버 주인에게는 「새 판 있음」과 복사할 `kyeot update` 명령을 보인다(홈의 설정 버튼에도 작은 점). 앱에서 같은 서버의 다른 사람에게는 보이지 않는다(`GET /version` 자체는 `version` 처럼 공개다). 끄려면 `KYEOT_UPDATE_CHECK=off` 를 준다(등록된 서비스는 다른 설정처럼 이 값을 이어 쓴다). 끄면 앱에도 아무것도 안 보인다.
+
 어느 쪽이든 등록된 서비스는 등록 파일에 저장된 설정(`KYEOT_ADDR`, `KYEOT_NETS`, `KYEOT_HERMES` 등)을 이어 쓴다. 지금 셸에 준 값이 있으면 그 값이 저장된 값을 바꾼다. 저장된 설정을 빼려면 `kyeot service uninstall` 뒤 원하는 설정만 준 셸에서 `kyeot service install` 한다. 설치 스크립트는 소유자 토큰 QR 을 처음 설치 때만 띄우고 업데이트 때는 띄우지 않는다. 서비스 없이 깔아 쓰던 kyeot 는 업데이트해도 서비스를 새로 등록하지 않는다. 터미널에서 띄운 서버는 끄고(Ctrl-C) 다시 띄울 때까지 옛 판으로 돈다.
 
 두 방법 모두 바로 앞 판을 `kyeot.prev` 로 남긴다. 업데이트 뒤 문제가 생기면 이렇게 되돌린다.
@@ -93,8 +95,9 @@
 | 공개 주소 | 없음 | `KYEOT_PUBLIC_URL=https://kyeot.example.com`. 프록시나 도메인 뒤에 둘 때 첫 실행 QR 과 `kyeot pair` 가 이 주소를 담는다(`-host` 가 이긴다). 있으면 `KYEOT_ADDR=127.0.0.1:…` 의 「폰이 닿지 않는다」 경고를 내지 않는다. 공인 주소에 `http` 를 주면 시작을 거부한다 |
 | 접속 기록 | 끔 | `KYEOT_ACCESS_LOG=1`. 요청마다 서버 기록에 한 줄: 시각, 계정 id 앞 8자, 메서드, 경로(쿼리·본문 없이), 상태, 걸린 시간, 접속 IP, 짧은 User-Agent. 웹소켓은 열림과 닫힘에 한 줄씩. 토큰은 남기지 않는다. 남에게 열어 두는 데모 서버용이며, 켜면 방문자의 IP 가 기록에 남는다 |
 | 주소의 토큰 | `?token=` 은 웹소켓 접속(`/client`, `/agent`)에서만 받는다. REST 는 `Authorization: Bearer` 헤더만. 폰 앱(iOS, 안드로이드)은 웹소켓도 헤더로 보내고, 주소 토큰은 브라우저(웹 판)와 옛 앱만 쓴다 | 없다 |
+| 새 판 확인 | 켬. 하루 한 번 GitHub 에서 최신 판 번호를 읽는다 | `KYEOT_UPDATE_CHECK=off`(`0`, `false`, `no`). 위 「업데이트」 참고 |
 | 대화 언어 | 앱 언어를 Hermes 실행마다 `/v1/runs` 의 `instructions` 로 짧게 넘긴다. Hermes 설정 파일은 고치지 않는다 | 없다 |
-| 서버 판 | `GET /version` 이 `{"version":"x.y.z"}` 를 인증 없이 낸다. 다른 컴퓨터의 설치 스크립트가 이 판을 받는다. 판이 `dev` 면 503 | 빌드 때 `-ldflags "-X main.version=<판>"` (`VERSION` 파일) |
+| 서버 판 | `GET /version` 이 `{"version":"x.y.z"}` 를 인증 없이 낸다. 새 판 확인이 읽은 뒤에는 `latest` 도 싣는다. 다른 컴퓨터의 설치 스크립트가 이 판을 받는다. 판이 `dev` 면 503 | 빌드 때 `-ldflags "-X main.version=<판>"` (`VERSION` 파일) |
 | 자동 실행 | `kyeot service install` 이 launchd(맥, label `app.kyeot.server`)나 systemd(리눅스, `kyeot-server.service`)에 등록한다. 에이전트 연결 서비스(`kyeot connect`)와 같은 코드(`cmd/kyeot/service.go`)를 쓰고, 소유자 토큰은 서비스 파일에 넣지 않는다. | `kyeot service uninstall`, `status` |
 | 지우기 | `kyeot uninstall` 은 서비스와 실행 파일만 내리고 기록을 남긴다. `--purge` 는 키와 기록까지 지운다. 다른 사용자가 있으면 사람마다 방과 대화 수를 보이고 「모두 지우기」와 「내 것만 지우기」(다른 사람 기록은 남기고 프로그램만 내린다) 가운데 고르게 한다. 물을 수 없는 실행(스크립트)이면 아무것도 지우지 않고 멈춘다. | `--purge=all`, `--purge=mine` |
 

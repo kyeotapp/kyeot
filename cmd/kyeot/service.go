@@ -39,7 +39,7 @@ var serverSpec = serviceSpec{
 	label: "app.kyeot.server", unit: "kyeot-server", desc: "kyeot server", logName: "kyeot-server.log",
 	always: true,
 	env: []string{"BRIDGE_UI_ADDR", "HERMES_HOME", "HERMES_URL", "KYEOT_ACCESS_LOG", "KYEOT_ADDR", "KYEOT_ALLOW_PLAIN", "KYEOT_ALLOWED_ORIGINS", "KYEOT_APNS_KEY", "KYEOT_APNS_KEY_ID", "KYEOT_APNS_TEAM_ID", "KYEOT_APNS_TOPIC",
-		"KYEOT_DB", "KYEOT_HERMES", "KYEOT_NETS", "KYEOT_PUBLIC_URL", "KYEOT_TLS_CERT", "KYEOT_TLS_KEY", "KYEOT_UPLOAD_TOTAL_MB", "KYEOT_WHISPER_MODEL", "XDG_CONFIG_HOME"}, // the owner token lives in a file, so it is not passed
+		"KYEOT_DB", "KYEOT_HERMES", "KYEOT_NETS", "KYEOT_PUBLIC_URL", "KYEOT_TLS_CERT", "KYEOT_TLS_KEY", "KYEOT_UPDATE_CHECK", "KYEOT_UPLOAD_TOTAL_MB", "KYEOT_WHISPER_MODEL", "XDG_CONFIG_HOME"}, // the owner token lives in a file, so it is not passed
 	done: trLater("서버를 켰다. 백그라운드 서비스로 돌기 때문에 터미널을 닫거나 재부팅해도 계속 뜬다"), off: "kyeot service uninstall",
 }
 

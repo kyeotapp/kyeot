@@ -204,7 +204,7 @@ func main() {
 	if err != nil || totalMB < 0 || totalMB > 1<<23 { // upper bound 8TB
 		log.Fatalf("KYEOT_UPLOAD_TOTAL_MB: must be an integer (MB) from 0 to 8388608: %q", getenv("UPLOAD_TOTAL_MB"))
 	}
-	srv, err := server.New(server.Options{UploadTotalQuota: totalMB << 20, DBPath: dbPath, OwnerToken: token, OwnerTokenFile: tokenFile, UploadKey: upKey, AllowedOrigins: origins, AllowNets: nets, WhisperModel: getenv("WHISPER_MODEL"), Push: apnsSender(), Version: version, PingInterval: ping, SensorDir: sensorDir(filepath.Dir(dbPath)), ProxyMarkFile: proxyMark, AccessLog: accessLogOut()})
+	srv, err := server.New(server.Options{UploadTotalQuota: totalMB << 20, DBPath: dbPath, OwnerToken: token, OwnerTokenFile: tokenFile, UploadKey: upKey, AllowedOrigins: origins, AllowNets: nets, WhisperModel: getenv("WHISPER_MODEL"), Push: apnsSender(), Version: version, PingInterval: ping, SensorDir: sensorDir(filepath.Dir(dbPath)), ProxyMarkFile: proxyMark, AccessLog: accessLogOut(), LatestURL: latestURL()})
 	if err != nil {
 		log.Fatal(err)
 	}
