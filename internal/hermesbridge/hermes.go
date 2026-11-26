@@ -46,6 +46,7 @@ type hermesEvent struct {
 	PatternKeys []string        `json:"pattern_keys"`
 	Choices     []string        `json:"choices"`
 	RequestID   string          `json:"request_id"`
+	PromptID    string          `json:"prompt_id"` // Hermes 0.22 session-authority events name the request id this way
 	Question    string          `json:"question"`
 	Generation  json.RawMessage `json:"execution_generation"`
 	Goal        string          `json:"goal"`
@@ -53,6 +54,14 @@ type hermesEvent struct {
 	ExitReason  string          `json:"turn_exit_reason"`
 	SubagentID  string          `json:"subagent_id"`
 	Status      string          `json:"status"`
+}
+
+// requestID is the id to answer this prompt with.
+func (ev hermesEvent) requestID() string {
+	if ev.RequestID != "" {
+		return ev.RequestID
+	}
+	return ev.PromptID
 }
 
 func (h *hermes) do(ctx context.Context, method, path string, body any) (*http.Response, error) {

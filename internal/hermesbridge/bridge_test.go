@@ -119,16 +119,18 @@ func newFakeHermes(t *testing.T) (*fakeHermes, string) {
 		} else if strings.Contains(body["input"], "long") {
 			ch <- ev(id, "message.delta", map[string]any{"delta": "half-written reply"})
 		} else if strings.Contains(body["input"], "choose") {
-			ch <- ev(id, "clarify.request", map[string]any{"question": "Which way should I log in?", "choices": []string{"Kakao", "Naver"}, "request_id": "cq-1", "execution_generation": 7})
+			ch <- ev(id, "clarify.request", map[string]any{"question": "Which way should I log in?", "choices": []string{"Kakao", "Naver"}, "kind": "clarify", "prompt_id": "cq-1", "execution_generation": 7})
 		} else if first {
 			ch <- ev(id, "run.started", nil)
 			ch <- ev(id, "tool.started", map[string]any{"tool": "terminal", "preview": "ls ~/Downloads", "tool_call_id": "tc1"})
 			ch <- ev(id, "tool.completed", map[string]any{"tool": "terminal", "duration": 0.42, "error": false, "tool_call_id": "tc1"})
 			ch <- ev(id, "message.delta", map[string]any{"delta": "Looked at the list.\n\nI will delete the old folder."})
 			fields := map[string]any{"command": "rm -rf ~/Downloads/old", "description": "delete files",
-				"pattern_key": "recursive delete", "choices": []string{"once", "session", "always", "deny"}, "request_id": "req-1"}
-			if !legacy {
-				fields["execution_generation"] = approvalGeneration
+				"pattern_key": "recursive delete", "choices": []string{"once", "session", "always", "deny"}}
+			if legacy {
+				fields["request_id"] = "req-1"
+			} else { // Hermes 0.22.4 session-authority shape, captured from a live run
+				fields["kind"], fields["prompt_id"], fields["execution_generation"] = "approval", "req-1", approvalGeneration
 			}
 			ch <- ev(id, "approval.request", fields)
 		} else {

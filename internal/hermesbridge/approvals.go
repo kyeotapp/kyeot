@@ -145,7 +145,7 @@ func (b *Bridge) requestApproval(ctx context.Context, task string, r *run, ev he
 	if len(choices) == 0 {
 		choices = []string{"once", "deny"}
 	}
-	ap := approval{requestID: ev.RequestID, generation: ev.Generation, choices: map[string]string{}}
+	ap := approval{requestID: ev.requestID(), generation: ev.Generation, choices: map[string]string{}}
 	var labels []string
 	scopes := map[string]string{}
 	for _, c := range choices {
@@ -207,7 +207,7 @@ func (b *Bridge) requestChoice(ctx context.Context, task string, r *run, ev herm
 		b.send(protocol.AgentMessage{Type: "message", Task: task, Text: question})
 		return
 	}
-	ap := approval{requestID: ev.RequestID, clarify: true, generation: ev.Generation, choices: map[string]string{}}
+	ap := approval{requestID: ev.requestID(), clarify: true, generation: ev.Generation, choices: map[string]string{}}
 	for _, c := range ev.Choices {
 		ap.choices[c] = c
 	}
