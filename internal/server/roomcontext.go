@@ -52,7 +52,7 @@ func (h *hub) roomContext(ownerID, roomID string) string {
 		if m.Removed != "" {
 			continue
 		}
-		lines = append(lines, line{m.CreatedAt, stamp(m.CreatedAt) + " " + m.Name + ": " + clipRunes(talkLine(m), roomContextLine)})
+		lines = append(lines, line{m.CreatedAt, stamp(m.CreatedAt) + " " + clipRunes(m.Name, 40) + ": " + clipRunes(talkLine(m), roomContextLine)})
 	}
 	slices.SortStableFunc(lines, func(a, b line) int { return cmp.Compare(a.at, b.at) })
 	head := "방 「" + room.Name + "」에서 온 질문이다."

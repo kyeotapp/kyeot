@@ -102,8 +102,8 @@ curl -s -H "Authorization: Bearer $KYEOT_OWNER_TOKEN" -d '{"name":"내 봇"}' ht
 
 | type | 필드 | 언제 |
 |---|---|---|
-| `task.start` | `task`, `text`, (`context`, `attachments`, `lang`, `askedBy`, `askedByName`) | 사용자가 앱에서 새 대화를 시작했을 때. `lang` 은 앱 언어(`ko`, `en`)라 대화 제목을 이 언어로 지으면 된다. `askedBy` 가 있으면 공유 방의 멤버가 주인의 에이전트를 부른 것이다(주인이면 없다) |
-| `user_message` | `task`, `text`, (`context`, `quote`, `edit`, `attachments`, `askedBy`, `askedByName`) | 이어지는 대화에 사용자가 말했을 때. 끝난 대화였다면 다시 열린 것이다. `edit` 은 `{id, original}` 로, 사용자가 앞서 한 말을 고친 것이다 |
+| `task.start` | `task`, `text`, (`context`, `attachments`, `lang`, `askedBy`, `askedByName`) | 사용자가 앱에서 새 대화를 시작했을 때. `lang` 은 앱 언어(`ko`, `en`)라 대화 제목을 이 언어로 지으면 된다. `askedBy` 가 있으면 공유 방의 멤버가 주인의 에이전트를 부른 것이다(주인이면 없다). 이런 요청과 `context`(최근 방 글)는 주인의 지시가 아니라 다른 사람의 글로 다룬다 |
+| `user_message` | `task`, `text`, (`context`, `quote`, `edit`, `attachments`, `askedBy`, `askedByName`) | 이어지는 대화에 사용자가 말했을 때. 끝난 대화였다면 다시 열린 것이다. `edit` 은 `{id, original}` 로, 사용자가 앞서 한 말을 고친 것이다. `askedBy`, `context` 는 `task.start` 와 같다 |
 | `approval_result` | `task`, `id`, `choice` | 사용자가 `approval` 에 답했을 때. `choice` 는 보낸 `options` 중 하나 그대로다 |
 | `cancel` | `task` | 사용자가 대화를 멈췄을 때 |
 | `routine.create` | `name`, `schedule`, `text` | 사용자가 앱에서 루틴을 만들었을 때. `text` 는 루틴이 할 일이다 |
